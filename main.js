@@ -142,10 +142,14 @@ ipcMain.handle('open-folder', async (_e, filePath) => {
   shell.showItemInFolder(filePath);
 });
 
-// ── GEMINI API REQUEST ──
+// ── GEMINI API REQUEST (ShopAIKey endpoint) ──
+const SHOPAIKEY_BASE   = 'https://direct.shopaikey.com';
+const GEMINI_MODEL     = 'gemini-3.1-flash-lite';
+
 ipcMain.handle('gemini-request', async (_e, { apiKey, model, contents, generationConfig }) => {
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const useModel = model || GEMINI_MODEL;
+    const url = `${SHOPAIKEY_BASE}/v1beta/models/${useModel}:generateContent?key=${apiKey}`;
     const body = { contents, generationConfig: generationConfig || { maxOutputTokens: 8192 } };
     const res  = await fetch(url, {
       method: 'POST',
@@ -166,7 +170,7 @@ ipcMain.handle('gemini-upload-file', async (_e, { apiKey, filePath, mimeType }) 
     const fileSize   = fileBuffer.length;
     // Step 1: initiate resumable upload
     const initRes = await fetch(
-      `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`,
+      `https://direct.shopaikey.com/upload/v1beta/files?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -201,7 +205,7 @@ ipcMain.handle('gemini-upload-file', async (_e, { apiKey, filePath, mimeType }) 
     while (state === 'PROCESSING' && attempts < 30) {
       await new Promise(r => setTimeout(r, 3000));
       const checkRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/${fileName}?key=${apiKey}`
+        `https://direct.shopaikey.com/v1beta/${fileName}?key=${apiKey}`
       );
       const checkData = await checkRes.json();
       state = checkData.state;

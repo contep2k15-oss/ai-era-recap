@@ -707,7 +707,7 @@ Trả về JSON hợp lệ (không markdown, không backtick):
 scene_type: action|emotional|plot|comedy|reveal
 violations: mảng [{x,y,w,h,t1,t2}] nếu có vùng nhạy cảm cần blur, rỗng nếu không.`;
   const sceneRes = await electronAPI.geminiRequest({
-    apiKey: state.apiKey, model: 'gemini-2.0-flash',
+    apiKey: state.apiKey, model: 'gemini-3.1-flash-lite',
     contents: [{ role:'user', parts:[{ fileData:{ mimeType: mimeMap[ext]||'video/mp4', fileUri }}, { text: scenePrompt }]}]
   });
   if (!sceneRes.ok) { setStep('scene','error',sceneRes.error); showAlert('Gemini Vision lỗi: ' + sceneRes.error); return; }
@@ -734,7 +734,7 @@ Cảnh: ${JSON.stringify(state.scenes.map(s => ({num:s.num,title:s.scene_title,t
 Trả về JSON (không markdown):
 {"scripts":[{"num":1,"voiceover":"script 40-80 từ","duration_sec":25},...],"intro":"câu giới thiệu nhân vật chính 30-50 từ","summary":"tóm tắt tổng quan 60-80 từ","outro":"câu kết thúc 20-30 từ"}`;
   const scriptRes = await electronAPI.geminiRequest({
-    apiKey: state.apiKey, model: 'gemini-2.0-flash',
+    apiKey: state.apiKey, model: 'gemini-3.1-flash-lite',
     contents: [{ role:'user', parts:[{ text: scriptPrompt }]}]
   });
   if (!scriptRes.ok) { setStep('script','error',scriptRes.error); showAlert('Script lỗi: ' + scriptRes.error); return; }
@@ -860,7 +860,7 @@ async function verifyApiKey() {
   statusEl.textContent = '⏳ Đang xác minh...';
   statusEl.style.color = '#fbbf24';
   const res = await electronAPI.geminiRequest({
-    apiKey: key, model: 'gemini-2.0-flash',
+    apiKey: key, model: 'gemini-3.1-flash-lite',
     contents: [{ role:'user', parts:[{ text:'Hello' }]}]
   });
   if (res.ok) {
