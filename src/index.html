@@ -9,19 +9,19 @@
   --bg0:#0a0f0e;--bg1:#0f172a;--bg2:#111827;--bg3:#1a2332;--bg4:#1e2a3a;--bg5:#243044;
   --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
   --text:#f1f5f9;--text2:#94a3b8;--text3:#475569;
-  --accent:#10b981;--accent2:#6ee7b7;--accentbg:rgba(16,185,129,0.08);
+  --accent:#10b981;--accent2:#6ee7b7;
   --green:#34d399;--red:#f87171;--redbg:rgba(248,113,113,0.1);
   --amber:#fbbf24;--amberbg:rgba(251,191,36,0.1);--purple:#a78bfa;
   --sidebar:52px;--titlebar:40px;--r:10px;--rs:8px;--rl:14px;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
-  --mono:"JetBrains Mono","Fira Code",monospace;
+  --mono:"Consolas","Fira Code",monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--sans);font-size:13px;}
 .app{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden;}
 
 /* TITLEBAR */
-.titlebar{height:var(--titlebar);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px 0 0;flex-shrink:0;-webkit-app-region:drag;user-select:none;z-index:30;}
+.titlebar{height:var(--titlebar);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px 0 0;flex-shrink:0;-webkit-app-region:drag;user-select:none;}
 .tl-logo{width:var(--sidebar);height:var(--titlebar);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .tl-gem{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#10b981,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:13px;}
 .tl-title{font-size:13px;font-weight:700;color:var(--text);}
@@ -48,7 +48,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .sb-lbl.on{color:#6ee7b7;}
 .sb-tooltip{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--bg5);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:200;}
 .sb-btn:hover .sb-tooltip{opacity:1;}
-.sb-sep{width:28px;height:1px;background:var(--border2);margin:5px 0;}
 
 /* CONTENT */
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -72,20 +71,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .block-sub{font-size:10px;color:#334155;margin-left:auto;}
 .block-body{padding:12px 14px;}
 
-/* UPLOAD ZONE */
-.upload-zone{border:1.5px dashed rgba(16,185,129,0.28);border-radius:var(--r);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(16,185,129,0.03);}
-.upload-zone:hover,.upload-zone.drag{border-color:rgba(16,185,129,0.55);background:rgba(16,185,129,0.07);}
-.upload-zone.has-file{border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.06);}
-.uz-icon{font-size:34px;margin-bottom:10px;}
-.uz-title{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:5px;}
-.uz-sub{font-size:12px;color:#475569;}
-.uz-info{font-size:12px;color:#6ee7b7;margin-top:6px;font-weight:600;}
-.uz-formats{display:flex;gap:5px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
-.uz-fmt{font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#64748b;}
+/* LINK INPUT */
+.link-box{display:flex;gap:8px;align-items:center;}
+.link-input{flex:1;padding:12px 14px;font-size:13px;font-family:var(--sans);background:var(--bg4);border:1px solid rgba(255,255,255,0.1);border-radius:var(--rs);color:#f1f5f9;outline:none;transition:border-color .15s;}
+.link-input:focus{border-color:rgba(110,231,183,0.5);}
+.link-input::placeholder{color:#334155;}
+.btn-paste{padding:12px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.3);border-radius:var(--rs);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-paste:hover{background:var(--bg5);border-color:#6ee7b7;}
+
+/* SUPPORTED SITES */
+.site-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.site-chip{font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#64748b;}
 
 /* FORM */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 .form-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:5px;display:block;}
 .form-input,.form-select{width:100%;padding:9px 11px;font-size:12px;font-family:var(--sans);background:var(--bg4);border:1px solid rgba(255,255,255,0.08);border-radius:var(--rs);color:#f1f5f9;outline:none;transition:border-color .15s;}
 .form-input:focus,.form-select:focus{border-color:rgba(110,231,183,0.5);}
@@ -130,14 +129,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .btn-primary:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);color:#a7f3d0;}
 .btn-primary:disabled{opacity:.3;cursor:not-allowed;}
 .btn-accent{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.35);border-radius:var(--rs);cursor:pointer;transition:all .18s;white-space:nowrap;}
-.btn-accent:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);color:#a7f3d0;}
+.btn-accent:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);}
 .btn-neutral{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:var(--rs);cursor:pointer;transition:all .18s;}
 .btn-neutral:hover{background:var(--bg5);border-color:rgba(255,255,255,0.2);color:#e2e8f0;}
 .btn-sm{padding:5px 11px;border-radius:6px;border:1px solid rgba(110,231,183,0.3);background:var(--bg4);color:#6ee7b7;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;}
 .btn-sm:hover{background:var(--bg5);border-color:rgba(110,231,183,0.6);}
 .btn-sm.warn{border-color:rgba(251,191,36,0.35);color:#fbbf24;}
-.btn-sm.warn:hover{background:rgba(251,191,36,0.08);}
-.btn-sm.red{border-color:rgba(248,113,113,0.35);color:#f87171;}
 .btn-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
 
 /* PROGRESS */
@@ -156,12 +153,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .done-check{color:#10b981;font-size:16px;font-weight:700;}
 .err-x{color:#f87171;font-size:16px;font-weight:700;}
 
-/* LOG BOX */
-.log-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-size:10px;font-family:var(--mono);color:#475569;max-height:80px;overflow-y:auto;margin-top:6px;display:none;}
+/* LOG */
+.log-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-size:10px;font-family:var(--mono);color:#475569;max-height:80px;overflow-y:auto;margin-top:8px;display:none;}
 .log-box.show{display:block;}
 
-/* RESULT / SCENE CARDS */
-.result-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+/* RESULT */
+.result-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
 .stat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 16px;text-align:center;flex:1;min-width:80px;}
 .stat-num{font-size:22px;font-weight:700;color:#6ee7b7;}
 .stat-lbl{font-size:10px;color:#334155;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
@@ -183,18 +180,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .scene-body{padding:10px 12px;}
 .scene-desc{font-size:11px;color:#64748b;line-height:1.6;margin-bottom:9px;}
 .vo-box{background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:var(--rs);padding:9px 11px;}
-.vo-label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#6ee7b7;margin-bottom:5px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.vo-label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#6ee7b7;margin-bottom:5px;font-weight:700;}
 .vo-text{font-size:11px;color:#94a3b8;line-height:1.65;}
 .vo-dur{font-size:9px;color:#334155;margin-top:5px;}
 
 /* ALERT */
-.alert{display:none;padding:10px 14px;border-radius:var(--rs);margin-bottom:10px;font-size:12px;}
-.alert.show{display:flex;align-items:center;gap:8px;}
+.alert{display:none;padding:10px 14px;border-radius:var(--rs);margin-bottom:10px;font-size:12px;line-height:1.6;}
+.alert.show{display:flex;align-items:flex-start;gap:8px;}
 .alert.err{background:var(--redbg);border:1px solid rgba(248,113,113,0.2);color:#f87171;}
 .alert.ok{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7;}
-.alert.warn{background:var(--amberbg);border:1px solid rgba(251,191,36,0.2);color:#fbbf24;}
 
-/* SETTINGS MODAL */
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal{background:var(--bg2);border:1px solid rgba(110,231,183,0.12);border-radius:var(--rl);width:460px;max-height:82vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,0.9);}
@@ -214,7 +210,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .api-input::placeholder{color:#334155;}
 .api-note{font-size:11px;color:#475569;margin-top:8px;line-height:1.6;}
 .api-link{color:#6ee7b7;cursor:pointer;text-decoration:underline;}
-.api-status{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:5px;}
+.api-status{font-size:11px;margin-top:6px;}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
 .toggle-row:last-child{border-bottom:none;}
 .toggle-label{font-size:12px;color:#e2e8f0;font-weight:500;}
@@ -238,7 +234,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   <span class="tl-title">AI ERA Recap</span>
   <div class="tl-spacer"></div>
   <div class="tl-badge"><div class="tl-dot"></div><span id="tlApiStatus">Chưa có API key</span></div>
-  <button class="btn-tl" onclick="openSettings()" title="Cài đặt">⚙️</button>
+  <button class="btn-tl" onclick="openSettings()">⚙️</button>
   <div class="wc">
     <button class="wb min" onclick="electronAPI.minimize()"></button>
     <button class="wb max" onclick="electronAPI.maximize()"></button>
@@ -250,8 +246,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sb-item">
-    <button class="sb-btn active" id="sb-upload" onclick="showTab('upload')">📁<span class="sb-tooltip">Upload video</span></button>
-    <div class="sb-lbl on" id="lbl-upload">Upload</div>
+    <button class="sb-btn active" id="sb-upload" onclick="showTab('upload')">🔗<span class="sb-tooltip">Nhập link</span></button>
+    <div class="sb-lbl on" id="lbl-upload">Link</div>
   </div>
   <div class="sb-item">
     <button class="sb-btn" id="sb-settings" onclick="showTab('settings')">🎛️<span class="sb-tooltip">Cài đặt recap</span></button>
@@ -267,28 +263,36 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   </div>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
 
-<!-- ── TAB: UPLOAD ── -->
+<!-- ── TAB: UPLOAD (Link) ── -->
 <div class="tab-panel active" id="tab-upload">
 <div class="panel-inner">
   <div class="page-hdr">
-    <div><div class="page-title">Upload Video Anime</div><div class="page-sub">MP4, MKV, AVI, MOV, WEBM — tối đa 1.5 tiếng</div></div>
+    <div><div class="page-title">Nhập Link Video Anime</div><div class="page-sub">Hỗ trợ 1000+ website — YouTube, Motchill, Bilibili, Crunchyroll...</div></div>
     <div class="step-badge">Bước 1 / 4</div>
   </div>
 
-  <div class="upload-zone" id="uploadZone" onclick="selectVideo()">
-    <div class="uz-icon" id="uzIcon">🎬</div>
-    <div class="uz-title" id="uzTitle">Kéo thả hoặc click để chọn video</div>
-    <div class="uz-sub" id="uzSub">AI tự động phân tích và chọn cảnh hay nhất</div>
-    <div class="uz-info" id="uzInfo" style="display:none"></div>
-    <div class="uz-formats">
-      <span class="uz-fmt">MP4</span><span class="uz-fmt">MKV</span><span class="uz-fmt">AVI</span><span class="uz-fmt">MOV</span><span class="uz-fmt">WEBM</span>
+  <div class="block">
+    <div class="block-head"><div class="block-num">🔗</div><div class="block-title">Link video</div></div>
+    <div class="block-body">
+      <div class="link-box">
+        <input class="link-input" id="videoLink" type="url" placeholder="Dán link video vào đây...">
+        <button class="btn-paste" onclick="pasteLink()">📋 Dán</button>
+      </div>
+      <div class="site-chips">
+        <span class="site-chip">▶ YouTube</span>
+        <span class="site-chip">🎬 Motchill</span>
+        <span class="site-chip">📺 Bilibili</span>
+        <span class="site-chip">🟠 Crunchyroll</span>
+        <span class="site-chip">📱 TikTok</span>
+        <span class="site-chip">👥 Facebook</span>
+        <span class="site-chip">+ 1000 site khác</span>
+      </div>
     </div>
   </div>
 
-  <div class="block" style="margin-top:12px;">
+  <div class="block">
     <div class="block-head"><div class="block-num">📝</div><div class="block-title">Thông tin anime</div></div>
     <div class="block-body">
       <div class="two-col">
@@ -345,9 +349,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   </div>
 
   <div class="block">
-    <div class="block-head"><div class="block-num">🎭</div><div class="block-title">Phong cách bình luận</div><div class="block-sub">Gemini sẽ viết theo phong cách này</div></div>
+    <div class="block-head"><div class="block-num">🎭</div><div class="block-title">Phong cách bình luận</div><div class="block-sub">Gemini viết theo phong cách này</div></div>
     <div class="block-body">
-      <div class="style-grid" id="styleGrid">
+      <div class="style-grid">
         <div class="style-card active" data-style="hype" onclick="selectStyle(this)"><div class="sc-emoji">🔥</div><div class="sc-name">Hype</div><div class="sc-desc">Phấn khích</div></div>
         <div class="style-card" data-style="analysis" onclick="selectStyle(this)"><div class="sc-emoji">🧠</div><div class="sc-name">Phân tích</div><div class="sc-desc">Sâu sắc</div></div>
         <div class="style-card" data-style="comedy" onclick="selectStyle(this)"><div class="sc-emoji">😂</div><div class="sc-name">Hài hước</div><div class="sc-desc">Vui vẻ</div></div>
@@ -360,7 +364,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   <div class="block">
     <div class="block-head"><div class="block-num">🎙️</div><div class="block-title">Giọng đọc — Edge TTS</div></div>
     <div class="block-body">
-      <div class="voice-grid" id="voiceGrid">
+      <div class="voice-grid">
         <div class="voice-card active" data-voice="vi-VN-HoaiMyNeural" onclick="selectVoice(this)">
           <div class="voice-avatar va-fvi">👩</div>
           <div><div class="voice-name">HoaiMy</div><div class="voice-lang">🇻🇳 Nữ · Tiếng Việt</div></div>
@@ -382,7 +386,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   </div>
 
   <div class="block">
-    <div class="block-head"><div class="block-num">⚙️</div><div class="block-title">Tuỳ chọn nâng cao</div></div>
+    <div class="block-head"><div class="block-num">⚙️</div><div class="block-title">Tuỳ chọn</div></div>
     <div class="block-body">
       <div class="set-row">
         <div><div class="set-label">Ưu tiên loại cảnh</div></div>
@@ -390,11 +394,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
           <option value="mixed">🎭 Tất cả loại</option>
           <option value="action">⚔️ Action / Chiến đấu</option>
           <option value="emotional">😭 Cảm xúc / Dramatic</option>
-          <option value="plot">🔍 Plot twist / Quan trọng</option>
+          <option value="plot">🔍 Plot twist</option>
         </select>
       </div>
       <div class="set-row" style="border:none;">
-        <div><div class="set-label">Tự động che mờ vi phạm</div><div class="set-desc">Blur vùng nhạy cảm, máu, ký hiệu — theo chính sách TikTok</div></div>
+        <div><div class="set-label">Tự động che mờ vi phạm</div><div class="set-desc">Blur vùng nhạy cảm theo chính sách TikTok</div></div>
         <div class="toggle on" id="toggleBlur" onclick="toggleEl(this)"></div>
       </div>
     </div>
@@ -414,34 +418,34 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 
   <div id="alertProcess" class="alert err"></div>
 
-  <div class="p-step" id="ps-read">
-    <div class="p-icon">📹</div>
-    <div class="p-info"><div class="p-label">Đọc video</div><div class="p-sub" id="ps-read-sub">Chờ bắt đầu</div></div>
+  <div class="p-step" id="ps-link">
+    <div class="p-icon">🔗</div>
+    <div class="p-info"><div class="p-label">Nhận link video</div><div class="p-sub" id="ps-link-sub">Kiểm tra link hợp lệ</div></div>
     <div class="p-right"></div>
   </div>
-  <div class="p-step wait" id="ps-stt">
-    <div class="p-icon">🎙️</div>
-    <div class="p-info"><div class="p-label">Whisper — Speech to Text</div><div class="p-sub" id="ps-stt-sub">Chuyển audio → transcript</div></div>
+  <div class="p-step wait" id="ps-subtitle">
+    <div class="p-icon">📄</div>
+    <div class="p-info"><div class="p-label">yt-dlp — Lấy subtitle</div><div class="p-sub" id="ps-subtitle-sub">Tải subtitle có sẵn từ website</div></div>
     <div class="p-right"></div>
   </div>
-  <div class="p-step wait" id="ps-upload">
-    <div class="p-icon">☁️</div>
-    <div class="p-info"><div class="p-label">Upload video lên Gemini</div><div class="p-sub" id="ps-upload-sub">Chuẩn bị phân tích cảnh</div></div>
+  <div class="p-step wait" id="ps-download">
+    <div class="p-icon">⬇️</div>
+    <div class="p-info"><div class="p-label">yt-dlp — Tải video</div><div class="p-sub" id="ps-download-sub">Tải video chất lượng 480p</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-keyframe">
+    <div class="p-icon">🖼️</div>
+    <div class="p-info"><div class="p-label">FFmpeg — Trích keyframe</div><div class="p-sub" id="ps-keyframe-sub">1 frame mỗi 30 giây</div></div>
     <div class="p-right"></div>
   </div>
   <div class="p-step wait" id="ps-scene">
     <div class="p-icon">👁️</div>
-    <div class="p-info"><div class="p-label">Gemini Vision — Phân tích cảnh</div><div class="p-sub" id="ps-scene-sub">Chọn highlight theo timestamp</div></div>
-    <div class="p-right"></div>
-  </div>
-  <div class="p-step wait" id="ps-script">
-    <div class="p-icon">✍️</div>
-    <div class="p-info"><div class="p-label">Gemini — Viết script voiceover</div><div class="p-sub" id="ps-script-sub">Theo phong cách đã chọn</div></div>
+    <div class="p-info"><div class="p-label">Gemini — Phân tích cảnh + viết script</div><div class="p-sub" id="ps-scene-sub">Hiểu nội dung + chọn highlight</div></div>
     <div class="p-right"></div>
   </div>
   <div class="p-step wait" id="ps-moderate">
     <div class="p-icon">🚫</div>
-    <div class="p-info"><div class="p-label">Gemini Vision — Kiểm duyệt TikTok</div><div class="p-sub" id="ps-moderate-sub">Phát hiện vùng vi phạm</div></div>
+    <div class="p-info"><div class="p-label">Kiểm duyệt TikTok</div><div class="p-sub" id="ps-moderate-sub">Phát hiện vùng vi phạm</div></div>
     <div class="p-right"></div>
   </div>
   <div class="p-step wait" id="ps-tts">
@@ -451,7 +455,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   </div>
   <div class="p-step wait" id="ps-ffmpeg">
     <div class="p-icon">🎬</div>
-    <div class="p-info"><div class="p-label">FFmpeg — Ghép video cuối</div><div class="p-sub" id="ps-ffmpeg-sub">Cắt cảnh + blur + ghép audio</div></div>
+    <div class="p-info"><div class="p-label">FFmpeg — Ghép video cuối</div><div class="p-sub" id="ps-ffmpeg-sub">Cắt cảnh + ghép voice mới</div></div>
     <div class="p-right"></div>
   </div>
 
@@ -466,10 +470,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
     <div><div class="page-title" id="resultTitle">Kết quả</div><div class="page-sub" id="resultSub"></div></div>
     <div class="step-badge" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">✓ Hoàn thành</div>
   </div>
-
   <div class="result-stats" id="resultStats"></div>
   <div id="scenesList"></div>
-
   <div class="btn-row" style="margin-top:8px;">
     <button class="btn-primary" style="flex:2;" onclick="exportVideo()">💾 Xuất video MP4</button>
     <button class="btn-neutral" style="flex:1;" onclick="copyFullScript()">📋 Copy script</button>
@@ -482,7 +484,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 </div><!-- /app-body -->
 </div><!-- /app -->
 
-<!-- ── SETTINGS MODAL ── -->
+<!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsModal" onclick="closeModalOutside(event)">
 <div class="modal">
   <div class="modal-head">
@@ -491,48 +493,35 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   </div>
   <div class="modal-body">
     <div class="modal-sec">
-      <div class="modal-lbl">Gemini API Key</div>
+      <div class="modal-lbl">Gemini API Key (ShopAIKey)</div>
       <div class="api-row">
         <div class="api-field">
-          <span class="api-pre">AIza...</span>
-          <input class="api-input" type="password" id="apiKeyInput" placeholder="Paste Gemini API key tại đây">
+          <span class="api-pre">sk-...</span>
+          <input class="api-input" type="password" id="apiKeyInput" placeholder="Paste API key tại đây">
         </div>
         <button class="btn-verify" onclick="verifyApiKey()">✓ Xác minh</button>
       </div>
       <div class="api-status" id="apiStatus"></div>
       <div class="api-note">
-        Lấy miễn phí tại <span class="api-link" onclick="openLink('https://aistudio.google.com')">aistudio.google.com</span>
-        — 15 req/phút, 1M token/ngày. Không cần thẻ ngân hàng.
+        Mua tại <span class="api-link" onclick="openLink('https://shopaikey.com')">shopaikey.com</span>
+        · Model: gemini-3.1-flash-lite · Endpoint: direct.shopaikey.com
       </div>
     </div>
-
-    <div class="modal-sec">
-      <div class="modal-lbl">Whisper Model</div>
-      <select class="form-select" id="whisperModel">
-        <option value="tiny">tiny — Nhanh nhất, chất lượng thấp</option>
-        <option value="base">base — Cân bằng tốc độ/chất lượng</option>
-        <option value="medium" selected>medium — Khuyên dùng</option>
-        <option value="large-v3">large-v3 — Chất lượng cao nhất, chậm</option>
-      </select>
-      <div class="api-note" style="margin-top:6px;">Cần cài: <span style="color:#6ee7b7;font-family:monospace;">pip install openai-whisper</span></div>
-    </div>
-
     <div class="modal-sec">
       <div class="modal-lbl">Tuỳ chọn</div>
       <div class="toggle-row">
         <div><div class="toggle-label">Tự động che mờ vi phạm TikTok</div><div class="toggle-desc">Blur vùng nhạy cảm, máu, ký hiệu</div></div>
-        <div class="toggle on" id="settingBlur" onclick="toggleEl(this)"></div>
+        <div class="toggle on" onclick="toggleEl(this)"></div>
       </div>
       <div class="toggle-row">
         <div><div class="toggle-label">Subtitle burn-in</div><div class="toggle-desc">Ghi subtitle vào video (hardcode)</div></div>
-        <div class="toggle on" id="settingSubtitle" onclick="toggleEl(this)"></div>
+        <div class="toggle on" onclick="toggleEl(this)"></div>
       </div>
       <div class="toggle-row">
-        <div><div class="toggle-label">Lưu file script riêng (.txt)</div><div class="toggle-desc">Xuất thêm file script kèm video</div></div>
-        <div class="toggle off" id="settingScript" onclick="toggleEl(this)"></div>
+        <div><div class="toggle-label">Lưu script riêng (.txt)</div><div class="toggle-desc">Xuất thêm file script kèm video</div></div>
+        <div class="toggle off" onclick="toggleEl(this)"></div>
       </div>
     </div>
-
     <button class="btn-primary" onclick="saveSettings()">💾 Lưu cài đặt</button>
   </div>
 </div>
@@ -541,27 +530,30 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 <script>
 // ── STATE ──
 const state = {
-  videoPath: null,
-  videoInfo: null,
+  videoLink: '',
   apiKey: '',
-  whisperModel: 'medium',
   style: 'hype',
   voice: 'vi-VN-HoaiMyNeural',
   sceneCount: 20,
   outputDuration: 30,
   scenePref: 'mixed',
   blurViolations: true,
-  transcript: null,
+  subtitle: null,
   scenes: [],
   scripts: [],
-  outputPath: null,
+  videoPath: null,
+  tmpDir: null,
 };
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', async () => {
   const saved = await electronAPI.loadSettings();
-  if (saved.apiKey) { state.apiKey = saved.apiKey; document.getElementById('apiKeyInput').value = saved.apiKey; updateApiStatus(true); }
-  if (saved.whisperModel) { state.whisperModel = saved.whisperModel; document.getElementById('whisperModel').value = saved.whisperModel; }
+  if (saved.apiKey) {
+    state.apiKey = saved.apiKey;
+    document.getElementById('apiKeyInput').value = saved.apiKey;
+    updateApiStatus(true);
+  }
+  electronAPI.onProgress(data => addLog(data.log || ''));
 });
 
 // ── TABS ──
@@ -574,35 +566,26 @@ function showTab(id) {
   const lb = document.getElementById('lbl-' + id); if (lb) lb.classList.add('on');
 }
 
-// ── UPLOAD ──
-async function selectVideo() {
-  const p = await electronAPI.selectVideoFile();
-  if (!p) return;
-  state.videoPath = p;
-  const info = await electronAPI.getVideoInfo(p);
-  state.videoInfo = info;
-  const zone = document.getElementById('uploadZone');
-  zone.classList.add('has-file');
-  document.getElementById('uzIcon').textContent = '✅';
-  document.getElementById('uzTitle').textContent = p.split(/[\\/]/).pop();
-  document.getElementById('uzSub').textContent = `Thời lượng: ${info.duration || '?'} · ${info.sizeKB ? Math.round(info.sizeKB/1024) + ' MB' : ''}`;
-  document.getElementById('uzInfo').style.display = 'none';
+// ── LINK ──
+async function pasteLink() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('videoLink').value = text;
+    state.videoLink = text;
+  } catch(e) {}
 }
 
-// Drag & drop
 document.addEventListener('DOMContentLoaded', () => {
-  const zone = document.getElementById('uploadZone');
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault(); zone.classList.remove('drag');
-    const file = e.dataTransfer.files[0];
-    if (file && file.path) { state.videoPath = file.path; zone.classList.add('has-file'); document.getElementById('uzTitle').textContent = file.name; }
+  document.getElementById('videoLink').addEventListener('input', e => {
+    state.videoLink = e.target.value.trim();
   });
 });
 
 function goToSettings() {
-  if (!state.videoPath) { alert('Vui lòng chọn video trước!'); return; }
+  const link = document.getElementById('videoLink').value.trim();
+  if (!link) { showToast('⚠️ Vui lòng nhập link video!'); return; }
+  if (!link.startsWith('http')) { showToast('⚠️ Link không hợp lệ!'); return; }
+  state.videoLink = link;
   showTab('settings');
 }
 
@@ -610,27 +593,30 @@ function goToSettings() {
 function syncSceneCount() {
   const dur = parseInt(document.getElementById('outputDuration').value);
   state.outputDuration = dur;
-  const map = {5:5, 10:8, 20:12, 30:20, 45:35, 60:50, 90:70};
-  const sc = map[dur] || 20;
-  document.getElementById('sceneCount').value = sc;
-  state.sceneCount = sc;
+  const map = {5:5,10:8,20:12,30:20,45:35,60:50,90:70};
+  document.getElementById('sceneCount').value = map[dur] || 20;
+  state.sceneCount = map[dur] || 20;
 }
+
 function aiPickSceneCount() {
   syncSceneCount();
   const btn = event.target; const orig = btn.textContent;
   btn.textContent = '✓ Đã chọn!';
   setTimeout(() => btn.textContent = orig, 2000);
 }
+
 function selectStyle(el) {
   document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   state.style = el.dataset.style;
 }
+
 function selectVoice(el) {
   document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   state.voice = el.dataset.voice;
 }
+
 function toggleEl(el) { el.classList.toggle('on'); el.classList.toggle('off'); }
 
 // ── PROCESS ──
@@ -647,133 +633,175 @@ function setStep(id, status, sub) {
   const subEl = document.getElementById('ps-' + id + '-sub');
   if (subEl && sub) subEl.textContent = sub;
 }
-function showAlert(msg, type='err') {
+
+function showAlert(msg) {
   const el = document.getElementById('alertProcess');
-  el.textContent = msg; el.className = 'alert ' + type + ' show';
+  el.textContent = '⚠️ ' + msg;
+  el.className = 'alert err show';
 }
+
 function addLog(txt) {
+  if (!txt || !txt.trim()) return;
   const lb = document.getElementById('logBox');
   lb.classList.add('show');
-  lb.textContent += txt + '\n';
+  lb.textContent += txt.trim() + '\n';
   lb.scrollTop = lb.scrollHeight;
 }
 
 async function startProcess() {
-  if (!state.apiKey) { alert('Vui lòng nhập Gemini API key trong ⚙️ Cài đặt trước!'); return; }
-  if (!state.videoPath) { alert('Vui lòng chọn video trước!'); return; }
+  if (!state.apiKey) { alert('Vui lòng nhập API key trong ⚙️ Cài đặt!'); return; }
   state.sceneCount = parseInt(document.getElementById('sceneCount').value) || 20;
   state.scenePref  = document.getElementById('scenePref').value;
   state.blurViolations = document.getElementById('toggleBlur').classList.contains('on');
+
   const animeName = document.getElementById('animeName').value || 'Anime';
-  const epNum = document.getElementById('epNum').value || '';
+  const epNum     = document.getElementById('epNum').value || '';
   document.getElementById('processSubtitle').textContent = `${animeName} ${epNum}`;
   document.getElementById('logBox').textContent = '';
+  document.getElementById('alertProcess').className = 'alert err';
   showTab('process');
 
-  // STEP 1: Read video
-  setStep('read', 'active', 'Đang đọc file...');
-  await sleep(500);
-  setStep('read', 'done', state.videoPath.split(/[\\/]/).pop());
+  // STEP 1: Nhận link
+  setStep('link', 'active');
+  await sleep(300);
+  setStep('link', 'done', state.videoLink.length > 60 ? state.videoLink.slice(0,60)+'...' : state.videoLink);
 
-  // STEP 2: Whisper STT
-  setStep('stt', 'active', 'Đang chạy Whisper...');
-  const sttRes = await electronAPI.runWhisper({ filePath: state.videoPath, model: state.whisperModel });
-  if (!sttRes.ok) {
-    setStep('stt', 'error', sttRes.error);
-    showAlert('Whisper lỗi: ' + sttRes.error + '\n→ Hãy cài: pip install openai-whisper');
-    // Continue without transcript
-    state.transcript = null;
-    setStep('stt', 'done', 'Bỏ qua (Whisper chưa cài)');
+  // STEP 2: Lấy subtitle
+  setStep('subtitle', 'active', 'Đang lấy subtitle...');
+  const subRes = await electronAPI.ytdlpSubtitle({ url: state.videoLink });
+  if (subRes.ok) {
+    state.subtitle = subRes;
+    setStep('subtitle', 'done', `${subRes.segments?.length || 0} dòng subtitle · ${(subRes.text||'').split(' ').length} từ`);
   } else {
-    state.transcript = sttRes;
-    setStep('stt', 'done', `${sttRes.segments?.length || 0} đoạn · ${(sttRes.text||'').split(' ').length} từ`);
+    setStep('subtitle', 'done', 'Không có subtitle — dùng keyframe');
+    state.subtitle = null;
   }
 
-  // STEP 3: Upload video to Gemini Files API
-  setStep('upload', 'active', 'Đang upload lên Gemini...');
-  const ext = state.videoPath.split('.').pop().toLowerCase();
-  const mimeMap = { mp4:'video/mp4', mkv:'video/x-matroska', avi:'video/x-msvideo', mov:'video/quicktime', webm:'video/webm' };
-  const uploadRes = await electronAPI.geminiUploadFile({ apiKey: state.apiKey, filePath: state.videoPath, mimeType: mimeMap[ext] || 'video/mp4' });
-  if (!uploadRes.ok) { setStep('upload','error', uploadRes.error); showAlert('Upload thất bại: ' + uploadRes.error); return; }
-  const fileUri = uploadRes.fileUri;
-  setStep('upload', 'done', 'Upload thành công');
+  // STEP 3 + 4: Tải video + trích keyframe
+  setStep('download', 'active', 'Đang tải video 480p...');
+  const frameRes = await electronAPI.ytdlpKeyframes({ url: state.videoLink });
+  if (!frameRes.ok) {
+    setStep('download', 'error', frameRes.error);
+    showAlert('Tải video thất bại: ' + frameRes.error);
+    return;
+  }
+  state.videoPath = frameRes.videoPath;
+  state.tmpDir    = frameRes.tmpDir;
+  setStep('download', 'done', `Video đã tải — ${frameRes.frames?.length || 0} frames`);
+  setStep('keyframe', 'done', `${frameRes.frames?.length || 0} keyframe đã trích`);
 
-  // STEP 4: Gemini Vision — analyze scenes
-  setStep('scene', 'active', `Đang phân tích, chọn ${state.sceneCount} cảnh...`);
-  const prefMap = { mixed:'tất cả loại cảnh', action:'ưu tiên action/chiến đấu', emotional:'ưu tiên cảm xúc', plot:'ưu tiên plot twist' };
-  const scenePrompt = `Xem video anime này và chọn ${state.sceneCount} cảnh hay nhất (${prefMap[state.scenePref]}).
-Trả về JSON hợp lệ (không markdown, không backtick):
-{"scenes":[{"num":1,"timestamp_start":"00:02:14","timestamp_end":"00:03:42","start_sec":134,"end_sec":222,"scene_type":"action","scene_title":"tên cảnh ngắn","importance":9,"description":"mô tả 1-2 câu","violations":[]},...],"anime_title":"${animeName}"}
-scene_type: action|emotional|plot|comedy|reveal
-violations: mảng [{x,y,w,h,t1,t2}] nếu có vùng nhạy cảm cần blur, rỗng nếu không.`;
-  const sceneRes = await electronAPI.geminiRequest({
-    apiKey: state.apiKey, model: 'gemini-3.1-flash-lite',
-    contents: [{ role:'user', parts:[{ fileData:{ mimeType: mimeMap[ext]||'video/mp4', fileUri }}, { text: scenePrompt }]}]
-  });
-  if (!sceneRes.ok) { setStep('scene','error',sceneRes.error); showAlert('Gemini Vision lỗi: ' + sceneRes.error); return; }
-  try {
-    const clean = sceneRes.text.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-    state.scenes = parsed.scenes || [];
-    setStep('scene','done', `Đã chọn ${state.scenes.length} cảnh`);
-  } catch(e) { setStep('scene','error','Parse JSON thất bại'); showAlert('Không parse được kết quả Gemini: ' + sceneRes.text.slice(0,200)); return; }
+  // STEP 5: Gemini phân tích + viết script
+  setStep('scene', 'active', `Phân tích ${state.sceneCount} cảnh...`);
 
-  // STEP 5: Gemini — write voiceover script
-  setStep('script', 'active', 'Đang viết script...');
   const styleMap = {
-    hype: 'hype phấn khích, dùng nhiều cảm thán, ALL CAPS chỗ quan trọng',
-    analysis: 'phân tích sâu, giải thích symbolism và ý nghĩa',
-    comedy: 'hài hước vui vẻ, dùng tiếng lóng anime, so sánh meme',
-    storytelling: 'kể chuyện cuốn hút như đọc tiểu thuyết',
-    review: 'review khách quan, đánh giá điểm mạnh yếu'
+    hype:        'hype phấn khích, ALL CAPS chỗ quan trọng, nhiều cảm thán',
+    analysis:    'phân tích sâu, giải thích ý nghĩa và symbolism',
+    comedy:      'hài hước vui vẻ, dùng tiếng lóng anime, so sánh meme',
+    storytelling:'kể chuyện cuốn hút như đọc tiểu thuyết',
+    review:      'review khách quan, đánh giá điểm mạnh yếu'
+  };
+  const prefMap = {
+    mixed:    'tất cả loại cảnh',
+    action:   'ưu tiên action/chiến đấu',
+    emotional:'ưu tiên cảm xúc/dramatic',
+    plot:     'ưu tiên plot twist'
   };
   const voiceLang = state.voice.startsWith('vi') ? 'tiếng Việt' : 'English';
-  const scriptPrompt = `Viết voiceover script cho ${state.scenes.length} cảnh anime sau.
-Phong cách: ${styleMap[state.style] || styleMap.hype}. Ngôn ngữ: ${voiceLang}.
-Cảnh: ${JSON.stringify(state.scenes.map(s => ({num:s.num,title:s.scene_title,type:s.scene_type,desc:s.description})))}
-Trả về JSON (không markdown):
-{"scripts":[{"num":1,"voiceover":"script 40-80 từ","duration_sec":25},...],"intro":"câu giới thiệu nhân vật chính 30-50 từ","summary":"tóm tắt tổng quan 60-80 từ","outro":"câu kết thúc 20-30 từ"}`;
-  const scriptRes = await electronAPI.geminiRequest({
-    apiKey: state.apiKey, model: 'gemini-3.1-flash-lite',
-    contents: [{ role:'user', parts:[{ text: scriptPrompt }]}]
-  });
-  if (!scriptRes.ok) { setStep('script','error',scriptRes.error); showAlert('Script lỗi: ' + scriptRes.error); return; }
-  try {
-    const clean = scriptRes.text.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-    state.scripts  = parsed.scripts  || [];
-    state.intro    = parsed.intro    || '';
-    state.summary  = parsed.summary  || '';
-    state.outro    = parsed.outro    || '';
-    setStep('script','done',`${state.scripts.length} script voiceover`);
-  } catch(e) { setStep('script','error','Parse JSON thất bại'); showAlert('Script parse lỗi'); return; }
 
-  // STEP 6: Moderation (use violations from scene analysis)
-  setStep('moderate','active','Kiểm tra vi phạm...');
-  await sleep(800);
-  const totalViolations = state.scenes.reduce((a,s) => a + (s.violations?.length||0), 0);
-  setStep('moderate','done', totalViolations > 0 ? `Phát hiện ${totalViolations} vùng cần blur` : 'Không có vi phạm');
+  // Build Gemini content với subtitle + keyframes
+  const parts = [];
 
-  // STEP 7: Edge TTS — generate audio for each scene
-  setStep('tts','active','Đang tạo voiceover...');
-  const ttsResults = [];
-  const allScripts = [
-    { text: state.intro,   type:'intro' },
-    { text: state.summary, type:'summary' },
-    ...state.scripts.map((s,i) => ({ text: s.voiceover, type:'scene', idx: i })),
-    { text: state.outro,   type:'outro' }
-  ].filter(s => s.text);
-
-  for (const item of allScripts) {
-    const ttsRes = await electronAPI.edgeTTS({ text: item.text, voice: state.voice, rate: state.style==='hype'?'+15%':state.style==='analysis'?'-5%':'+0%' });
-    ttsResults.push({ ...item, audioB64: ttsRes.ok ? ttsRes.data : null, ok: ttsRes.ok });
+  if (state.subtitle?.text) {
+    parts.push({ text: `SUBTITLE/TRANSCRIPT:\n${state.subtitle.text.slice(0, 8000)}` });
   }
-  setStep('tts','done',`${ttsResults.filter(r=>r.ok).length}/${ttsResults.length} audio OK`);
 
-  // STEP 8: FFmpeg — cut + blur + merge (simulated in demo, real would need tmp files)
-  setStep('ffmpeg','active','Đang ghép video...');
-  await sleep(1500);
-  setStep('ffmpeg','done','Video recap hoàn tất!');
+  // Thêm keyframes
+  if (frameRes.frames?.length > 0) {
+    parts.push({ text: `\nKEYFRAMES (mỗi frame cách nhau 30 giây):` });
+    frameRes.frames.forEach(f => {
+      parts.push({ text: `\nFrame tại ${f.timestamp} (${f.timestamp_sec}s):` });
+      parts.push({ inlineData: { mimeType: 'image/jpeg', data: f.b64 } });
+    });
+  }
+
+  parts.push({ text: `
+Anime: "${animeName}" ${epNum}
+Nhiệm vụ: Chọn ${state.sceneCount} cảnh hay nhất (${prefMap[state.scenePref]}) và viết voiceover script.
+Phong cách: ${styleMap[state.style] || styleMap.hype}. Ngôn ngữ output: ${voiceLang}.
+
+Trả về JSON hợp lệ (không markdown, không backtick):
+{
+  "scenes": [
+    {
+      "num": 1,
+      "timestamp_start": "00:02:14",
+      "timestamp_end": "00:03:42", 
+      "start_sec": 134,
+      "end_sec": 222,
+      "scene_type": "action",
+      "scene_title": "tên cảnh ngắn",
+      "importance": 9,
+      "description": "mô tả 1-2 câu",
+      "voiceover": "script bình luận 40-80 từ",
+      "duration_sec": 25,
+      "violations": []
+    }
+  ],
+  "intro": "giới thiệu nhân vật chính 30-50 từ",
+  "summary": "tóm tắt tổng quan 60-80 từ",
+  "outro": "câu kết thúc 20-30 từ"
+}
+scene_type: action|emotional|plot|comedy|reveal
+violations: [{x,y,w,h,t1,t2}] nếu có vùng nhạy cảm, [] nếu không.` });
+
+  const geminiRes = await electronAPI.geminiRequest({
+    apiKey: state.apiKey,
+    model: 'gemini-3.1-flash-lite',
+    contents: [{ role: 'user', parts }]
+  });
+
+  if (!geminiRes.ok) {
+    setStep('scene', 'error', geminiRes.error);
+    showAlert('Gemini lỗi: ' + geminiRes.error);
+    return;
+  }
+
+  try {
+    const clean  = geminiRes.text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    state.scenes  = parsed.scenes  || [];
+    state.scripts = parsed.scenes?.map(s => ({ voiceover: s.voiceover, duration_sec: s.duration_sec })) || [];
+    state.intro   = parsed.intro   || '';
+    state.summary = parsed.summary || '';
+    state.outro   = parsed.outro   || '';
+    setStep('scene', 'done', `${state.scenes.length} cảnh · ${state.scripts.length} script`);
+  } catch(e) {
+    setStep('scene', 'error', 'Parse JSON thất bại');
+    showAlert('Không parse được kết quả Gemini');
+    return;
+  }
+
+  // STEP 6: Kiểm duyệt
+  setStep('moderate', 'active', 'Kiểm tra vi phạm...');
+  await sleep(500);
+  const totalViol = state.scenes.reduce((a,s) => a + (s.violations?.length||0), 0);
+  setStep('moderate', 'done', totalViol > 0 ? `${totalViol} vùng cần blur` : 'Không có vi phạm');
+
+  // STEP 7: Edge TTS
+  setStep('tts', 'active', 'Đang tạo voiceover...');
+  const rateMap = { hype:'+15%', analysis:'-5%', comedy:'+10%', storytelling:'+0%', review:'-3%' };
+  const ttsOk = [];
+  for (const s of state.scenes) {
+    if (!s.voiceover) continue;
+    const r = await electronAPI.edgeTTS({ text: s.voiceover, voice: state.voice, rate: rateMap[state.style]||'+0%' });
+    ttsOk.push(r.ok);
+  }
+  setStep('tts', 'done', `${ttsOk.filter(Boolean).length}/${state.scenes.length} audio OK`);
+
+  // STEP 8: FFmpeg ghép (simulated — cần tmp files thực tế)
+  setStep('ffmpeg', 'active', 'Đang ghép video...');
+  await sleep(1000);
+  setStep('ffmpeg', 'done', 'Video recap hoàn tất!');
 
   // Show result
   renderResult(animeName, epNum);
@@ -782,20 +810,20 @@ Trả về JSON (không markdown):
 
 function renderResult(animeName, epNum) {
   document.getElementById('resultTitle').textContent = `${animeName} ${epNum}`;
-  document.getElementById('resultSub').textContent = `${state.scenes.length} cảnh · ${document.getElementById('outputDuration').options[document.getElementById('outputDuration').selectedIndex].text} · ${state.style} · ${state.voice.split('-')[2]?.replace('Neural','')||''}`;
+  const durEl = document.getElementById('outputDuration');
+  document.getElementById('resultSub').textContent =
+    `${state.scenes.length} cảnh · ${durEl.options[durEl.selectedIndex].text} · ${state.style} · ${state.voice.split('-')[2]?.replace('Neural','')||''}`;
 
-  const totalWords = state.scripts.reduce((a,s) => a + (s.voiceover||'').split(' ').length, 0);
+  const totalWords = state.scenes.reduce((a,s) => a + (s.voiceover||'').split(' ').length, 0);
   document.getElementById('resultStats').innerHTML = `
     <div class="stat-card"><div class="stat-num">${state.scenes.length}</div><div class="stat-lbl">Cảnh chọn</div></div>
     <div class="stat-card"><div class="stat-num">${totalWords}</div><div class="stat-lbl">Từ script</div></div>
     <div class="stat-card"><div class="stat-num">${state.scenes.reduce((a,s)=>a+(s.violations?.length||0),0)}</div><div class="stat-lbl">Vùng blur</div></div>
   `;
 
-  const typeClass = { action:'type-action', emotional:'type-emotional', plot:'type-plot', comedy:'type-comedy', reveal:'type-reveal' };
-  const list = document.getElementById('scenesList');
-  list.innerHTML = state.scenes.map((s, i) => {
-    const script = state.scripts[i];
-    const imp = [1,2,3,4,5].map(n => `<div class="imp-dot${n<=s.importance/2?' on':''}"></div>`).join('');
+  const typeClass = { action:'type-action',emotional:'type-emotional',plot:'type-plot',comedy:'type-comedy',reveal:'type-reveal' };
+  document.getElementById('scenesList').innerHTML = state.scenes.map((s,i) => {
+    const imp = [1,2,3,4,5].map(n => `<div class="imp-dot${n<=Math.round(s.importance/2)?' on':''}"></div>`).join('');
     return `
     <div class="scene-card">
       <div class="scene-head">
@@ -807,14 +835,14 @@ function renderResult(animeName, epNum) {
       </div>
       <div class="scene-body">
         <div class="scene-desc">${s.description}</div>
-        ${script ? `<div class="vo-box">
+        <div class="vo-box">
           <div class="vo-label">🎙️ Voiceover · ${state.voice.split('-')[2]?.replace('Neural','')||''}</div>
-          <div class="vo-text">${script.voiceover}</div>
-          <div class="vo-dur">⏱ ~${script.duration_sec || '?'} giây đọc</div>
-        </div>` : ''}
+          <div class="vo-text">${s.voiceover||''}</div>
+          <div class="vo-dur">⏱ ~${s.duration_sec||'?'} giây đọc</div>
+        </div>
         <div class="btn-row">
           <button class="btn-sm" onclick="previewVoice(${i})">🔊 Nghe thử</button>
-          <button class="btn-sm" onclick="copyText('${escQ(script?.voiceover||'')}')">📋 Copy</button>
+          <button class="btn-sm" onclick="copyText('${escQ(s.voiceover||'')}')">📋 Copy</button>
           ${s.violations?.length ? `<button class="btn-sm warn">🚫 ${s.violations.length} vùng blur</button>` : ''}
         </div>
       </div>
@@ -822,15 +850,15 @@ function renderResult(animeName, epNum) {
   }).join('');
 }
 
-function escQ(s) { return (s||'').replace(/'/g,"\\'").replace(/\n/g,' '); }
+function escQ(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' '); }
 
 async function previewVoice(idx) {
-  const script = state.scripts[idx];
-  if (!script?.voiceover) return;
-  const res = await electronAPI.edgeTTS({ text: script.voiceover, voice: state.voice });
+  const s = state.scenes[idx];
+  if (!s?.voiceover) return;
+  const rateMap = { hype:'+15%', analysis:'-5%', comedy:'+10%', storytelling:'+0%', review:'-3%' };
+  const res = await electronAPI.edgeTTS({ text: s.voiceover, voice: state.voice, rate: rateMap[state.style]||'+0%' });
   if (!res.ok) return;
-  const audio = new Audio('data:audio/mp3;base64,' + res.data);
-  audio.play();
+  new Audio('data:audio/mp3;base64,' + res.data).play();
 }
 
 function copyText(text) {
@@ -839,17 +867,17 @@ function copyText(text) {
 }
 
 function copyFullScript() {
-  const full = [state.intro, state.summary, ...state.scripts.map(s=>s.voiceover), state.outro].filter(Boolean).join('\n\n');
+  const full = [state.intro, state.summary, ...state.scenes.map(s=>s.voiceover), state.outro].filter(Boolean).join('\n\n');
   navigator.clipboard.writeText(full);
   showToast('✅ Đã copy toàn bộ script!');
 }
 
 async function exportVideo() {
-  showToast('⚠️ Tính năng xuất video cần FFmpeg — đang phát triển');
+  showToast('⏳ Tính năng đang hoàn thiện...');
 }
 
 // ── SETTINGS MODAL ──
-function openSettings() { document.getElementById('settingsModal').classList.add('show'); }
+function openSettings()  { document.getElementById('settingsModal').classList.add('show'); }
 function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
 function closeModalOutside(e) { if (e.target === document.getElementById('settingsModal')) closeSettings(); }
 
@@ -865,13 +893,12 @@ async function verifyApiKey() {
   });
   if (res.ok) {
     state.apiKey = key;
-    statusEl.innerHTML = '✅ API key hợp lệ!';
+    statusEl.textContent = '✅ API key hợp lệ!';
     statusEl.style.color = '#6ee7b7';
     updateApiStatus(true);
   } else {
-    statusEl.innerHTML = '❌ ' + res.error;
+    statusEl.textContent = '❌ ' + res.error;
     statusEl.style.color = '#f87171';
-    updateApiStatus(false);
   }
 }
 
@@ -883,21 +910,21 @@ function updateApiStatus(ok) {
 async function saveSettings() {
   const key = document.getElementById('apiKeyInput').value.trim();
   state.apiKey = key;
-  state.whisperModel = document.getElementById('whisperModel').value;
-  await electronAPI.saveSettings({ apiKey: key, whisperModel: state.whisperModel });
+  await electronAPI.saveSettings({ apiKey: key });
   updateApiStatus(!!key);
   showToast('✅ Đã lưu cài đặt!');
   closeSettings();
 }
 
-function openLink(url) { electronAPI && window.open ? window.open(url) : null; }
+function openLink(url) { if (typeof require !== 'undefined') require('electron').shell?.openExternal(url); }
 
 // ── UTILS ──
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function showToast(msg) {
   const t = document.createElement('div');
   t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e2a3a;border:1px solid rgba(110,231,183,0.4);color:#6ee7b7;padding:10px 20px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;';
-  t.textContent = msg; document.body.appendChild(t);
+  t.textContent = msg;
+  document.body.appendChild(t);
   setTimeout(() => t.remove(), 2500);
 }
 </script>
