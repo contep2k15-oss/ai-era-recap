@@ -222,7 +222,8 @@ ipcMain.handle('run-whisper', async (event, { filePath, model }) => {
     // Try python whisper first
     const whisperModel = model || 'medium';
     const outDir = os.tmpdir();
-    const proc = spawn('python3', [
+    const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+    const proc = spawn(pythonCmd, [
       '-m', 'whisper', filePath,
       '--model', whisperModel,
       '--output_format', 'json',
