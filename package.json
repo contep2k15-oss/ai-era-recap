@@ -1,0 +1,51 @@
+{
+  "name": "ai-era-recap",
+  "version": "1.0.0",
+  "description": "AI ERA Recap — Tự động tạo video recap anime cho TikTok",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.aierarecap.app",
+    "productName": "AI ERA Recap",
+    "copyright": "AI ERA Recap",
+    "publish": null,
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**/*",
+      "node_modules/ws/**/*"
+    ],
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "edge-tts.js",
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/ffmpeg-static/**/*",
+      "node_modules/ws/**/*"
+    ],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerLanguages": ["vi-VN", "en-US"],
+      "language": "1033"
+    }
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

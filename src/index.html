@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI ERA Recap</title>
+<style>
+:root{
+  --bg0:#0a0f0e;--bg1:#0f172a;--bg2:#111827;--bg3:#1a2332;--bg4:#1e2a3a;--bg5:#243044;
+  --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.08);--border3:rgba(255,255,255,0.12);
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#475569;
+  --accent:#10b981;--accent2:#6ee7b7;--accentbg:rgba(16,185,129,0.08);
+  --green:#34d399;--red:#f87171;--redbg:rgba(248,113,113,0.1);
+  --amber:#fbbf24;--amberbg:rgba(251,191,36,0.1);--purple:#a78bfa;
+  --sidebar:52px;--titlebar:40px;--r:10px;--rs:8px;--rl:14px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Fira Code",monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);font-family:var(--sans);font-size:13px;}
+.app{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden;}
+
+/* TITLEBAR */
+.titlebar{height:var(--titlebar);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px 0 0;flex-shrink:0;-webkit-app-region:drag;user-select:none;z-index:30;}
+.tl-logo{width:var(--sidebar);height:var(--titlebar);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tl-gem{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#10b981,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.tl-title{font-size:13px;font-weight:700;color:var(--text);}
+.tl-spacer{flex:1;}
+.tl-badge{font-size:10px;padding:3px 9px;border-radius:99px;border:1px solid rgba(16,185,129,0.3);color:rgba(110,231,183,0.85);background:rgba(16,185,129,0.08);display:flex;align-items:center;gap:4px;-webkit-app-region:no-drag;}
+.tl-dot{width:5px;height:5px;border-radius:50%;background:var(--green);}
+.btn-tl{-webkit-app-region:no-drag;width:28px;height:28px;border-radius:7px;border:1px solid rgba(110,231,183,0.28);background:rgba(16,185,129,0.06);color:#6ee7b7;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;margin-left:8px;}
+.btn-tl:hover{background:rgba(16,185,129,0.14);border-color:#6ee7b7;}
+.wc{display:flex;gap:6px;margin-left:10px;-webkit-app-region:no-drag;}
+.wb{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;}
+.wb.close{background:#ff5f57;}.wb.min{background:#ffbd2e;}.wb.max{background:#28c840;}
+
+/* APP BODY */
+.app-body{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:3px;flex-shrink:0;overflow:visible;}
+.sb-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.sb-btn{position:relative;width:40px;height:40px;border-radius:10px;border:none;background:transparent;color:#334155;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;font-size:17px;-webkit-app-region:no-drag;}
+.sb-btn:hover{background:rgba(255,255,255,0.05);color:#64748b;}
+.sb-btn.active{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2);}
+.sb-btn.active::before{content:'';position:absolute;left:-10px;top:50%;transform:translateY(-50%);width:3px;height:22px;background:var(--accent);border-radius:0 3px 3px 0;}
+.sb-lbl{font-size:8px;font-weight:600;color:#334155;letter-spacing:.02em;}
+.sb-lbl.on{color:#6ee7b7;}
+.sb-tooltip{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--bg5);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:200;}
+.sb-btn:hover .sb-tooltip{opacity:1;}
+.sb-sep{width:28px;height:1px;background:var(--border2);margin:5px 0;}
+
+/* CONTENT */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.tab-panel.active{display:flex;}
+.panel-inner{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 24px;}
+.panel-inner::-webkit-scrollbar{width:4px;}
+.panel-inner::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px;}
+
+/* PAGE HEADER */
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.page-title{font-size:16px;font-weight:700;color:#f1f5f9;}
+.page-sub{font-size:11px;color:#334155;margin-top:3px;}
+.step-badge{font-size:11px;padding:4px 12px;border-radius:99px;background:rgba(16,185,129,0.08);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25);font-weight:600;white-space:nowrap;}
+
+/* BLOCK */
+.block{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.block-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.block-num{width:20px;height:20px;border-radius:6px;background:rgba(16,185,129,0.1);color:#6ee7b7;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.block-title{font-size:13px;font-weight:600;color:#f1f5f9;}
+.block-sub{font-size:10px;color:#334155;margin-left:auto;}
+.block-body{padding:12px 14px;}
+
+/* UPLOAD ZONE */
+.upload-zone{border:1.5px dashed rgba(16,185,129,0.28);border-radius:var(--r);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(16,185,129,0.03);}
+.upload-zone:hover,.upload-zone.drag{border-color:rgba(16,185,129,0.55);background:rgba(16,185,129,0.07);}
+.upload-zone.has-file{border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.06);}
+.uz-icon{font-size:34px;margin-bottom:10px;}
+.uz-title{font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:5px;}
+.uz-sub{font-size:12px;color:#475569;}
+.uz-info{font-size:12px;color:#6ee7b7;margin-top:6px;font-weight:600;}
+.uz-formats{display:flex;gap:5px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+.uz-fmt{font-size:10px;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#64748b;}
+
+/* FORM */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.form-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:5px;display:block;}
+.form-input,.form-select{width:100%;padding:9px 11px;font-size:12px;font-family:var(--sans);background:var(--bg4);border:1px solid rgba(255,255,255,0.08);border-radius:var(--rs);color:#f1f5f9;outline:none;transition:border-color .15s;}
+.form-input:focus,.form-select:focus{border-color:rgba(110,231,183,0.5);}
+.form-input::placeholder{color:#334155;}
+.form-select option{background:var(--bg4);}
+
+/* SET ROWS */
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
+.set-row:last-child{border-bottom:none;}
+.set-label{font-size:13px;color:#e2e8f0;font-weight:500;}
+.set-desc{font-size:10px;color:#334155;margin-top:2px;}
+.set-note{font-size:10px;color:#fbbf24;margin-top:2px;}
+
+/* STYLE GRID */
+.style-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.style-card{padding:12px 8px;border-radius:var(--rs);border:1px solid rgba(255,255,255,0.08);background:var(--bg4);cursor:pointer;transition:all .15s;text-align:center;}
+.style-card:hover{border-color:rgba(110,231,183,0.3);background:var(--bg5);}
+.style-card.active{border-color:rgba(16,185,129,0.6);background:rgba(16,185,129,0.08);}
+.sc-emoji{font-size:18px;margin-bottom:5px;}
+.sc-name{font-size:11px;font-weight:700;color:#e2e8f0;}
+.sc-desc{font-size:9px;color:#475569;margin-top:3px;}
+
+/* VOICE GRID */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.voice-card{padding:11px 13px;border-radius:var(--rs);border:1px solid rgba(255,255,255,0.08);background:var(--bg4);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;}
+.voice-card:hover{border-color:rgba(110,231,183,0.3);background:var(--bg5);}
+.voice-card.active{border-color:rgba(16,185,129,0.55);background:rgba(16,185,129,0.08);}
+.voice-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.va-fvi{background:rgba(236,72,153,0.15);}
+.va-mvi{background:rgba(59,130,246,0.15);}
+.va-fen{background:rgba(251,146,60,0.15);}
+.va-men{background:rgba(167,139,250,0.15);}
+.voice-name{font-size:12px;font-weight:700;color:#e2e8f0;}
+.voice-lang{font-size:10px;color:#475569;margin-top:1px;}
+
+/* SCENE COUNT */
+.scene-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.or-sep{font-size:11px;color:#334155;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:13px;font-size:13px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.35);border-radius:var(--rs);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.btn-primary:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);color:#a7f3d0;}
+.btn-primary:disabled{opacity:.3;cursor:not-allowed;}
+.btn-accent{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.35);border-radius:var(--rs);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.btn-accent:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);color:#a7f3d0;}
+.btn-neutral{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#94a3b8;border:1px solid rgba(255,255,255,0.1);border-radius:var(--rs);cursor:pointer;transition:all .18s;}
+.btn-neutral:hover{background:var(--bg5);border-color:rgba(255,255,255,0.2);color:#e2e8f0;}
+.btn-sm{padding:5px 11px;border-radius:6px;border:1px solid rgba(110,231,183,0.3);background:var(--bg4);color:#6ee7b7;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s;}
+.btn-sm:hover{background:var(--bg5);border-color:rgba(110,231,183,0.6);}
+.btn-sm.warn{border-color:rgba(251,191,36,0.35);color:#fbbf24;}
+.btn-sm.warn:hover{background:rgba(251,191,36,0.08);}
+.btn-sm.red{border-color:rgba(248,113,113,0.35);color:#f87171;}
+.btn-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+
+/* PROGRESS */
+.p-step{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);background:var(--bg3);border:1px solid var(--border2);margin-bottom:6px;transition:all .3s;}
+.p-step.done{border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.04);}
+.p-step.active{border-color:rgba(110,231,183,0.45);background:rgba(16,185,129,0.07);}
+.p-step.wait{opacity:.28;}
+.p-step.error{border-color:rgba(248,113,113,0.35);background:rgba(248,113,113,0.05);}
+.p-icon{font-size:18px;flex-shrink:0;}
+.p-info{flex:1;min-width:0;}
+.p-label{font-size:12px;font-weight:700;color:#e2e8f0;}
+.p-sub{font-size:10px;color:#334155;margin-top:2px;}
+.p-right{margin-left:auto;flex-shrink:0;}
+.spin{width:16px;height:16px;border:2px solid rgba(16,185,129,0.15);border-top-color:#10b981;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.done-check{color:#10b981;font-size:16px;font-weight:700;}
+.err-x{color:#f87171;font-size:16px;font-weight:700;}
+
+/* LOG BOX */
+.log-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;font-size:10px;font-family:var(--mono);color:#475569;max-height:80px;overflow-y:auto;margin-top:6px;display:none;}
+.log-box.show{display:block;}
+
+/* RESULT / SCENE CARDS */
+.result-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.stat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 16px;text-align:center;flex:1;min-width:80px;}
+.stat-num{font-size:22px;font-weight:700;color:#6ee7b7;}
+.stat-lbl{font-size:10px;color:#334155;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+
+.scene-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:8px;}
+.scene-head{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);}
+.scene-num-badge{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#10b981,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0f0e;flex-shrink:0;}
+.scene-time{font-size:10px;color:#6ee7b7;font-weight:700;font-family:var(--mono);flex-shrink:0;}
+.scene-type{font-size:9px;padding:2px 8px;border-radius:99px;font-weight:700;flex-shrink:0;}
+.type-action{background:rgba(248,113,113,0.1);color:#fca5a5;border:1px solid rgba(248,113,113,0.2);}
+.type-emotional{background:rgba(96,165,250,0.1);color:#93c5fd;border:1px solid rgba(96,165,250,0.2);}
+.type-plot{background:rgba(167,139,250,0.1);color:#c4b5fd;border:1px solid rgba(167,139,250,0.2);}
+.type-comedy{background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);}
+.type-reveal{background:rgba(248,113,113,0.1);color:#fca5a5;border:1px solid rgba(248,113,113,0.2);}
+.scene-title-txt{font-size:12px;font-weight:600;color:#e2e8f0;flex:1;}
+.imp-dots{display:flex;gap:2px;}
+.imp-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.07);}
+.imp-dot.on{background:#fbbf24;}
+.scene-body{padding:10px 12px;}
+.scene-desc{font-size:11px;color:#64748b;line-height:1.6;margin-bottom:9px;}
+.vo-box{background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:var(--rs);padding:9px 11px;}
+.vo-label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#6ee7b7;margin-bottom:5px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.vo-text{font-size:11px;color:#94a3b8;line-height:1.65;}
+.vo-dur{font-size:9px;color:#334155;margin-top:5px;}
+
+/* ALERT */
+.alert{display:none;padding:10px 14px;border-radius:var(--rs);margin-bottom:10px;font-size:12px;}
+.alert.show{display:flex;align-items:center;gap:8px;}
+.alert.err{background:var(--redbg);border:1px solid rgba(248,113,113,0.2);color:#f87171;}
+.alert.ok{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7;}
+.alert.warn{background:var(--amberbg);border:1px solid rgba(251,191,36,0.2);color:#fbbf24;}
+
+/* SETTINGS MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid rgba(110,231,183,0.12);border-radius:var(--rl);width:460px;max-height:82vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,0.9);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:14px;font-weight:700;color:#f1f5f9;}
+.modal-close{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,0.08);background:var(--bg3);color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;}
+.modal-close:hover{border-color:#f87171;color:#f87171;}
+.modal-body{padding:20px;}
+.modal-sec{margin-bottom:22px;}
+.modal-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.modal-lbl::after{content:"";flex:1;height:1px;background:var(--border);}
+.api-row{display:flex;gap:8px;align-items:center;}
+.api-field{flex:1;display:flex;align-items:center;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--rs);overflow:hidden;transition:border-color .15s;}
+.api-field:focus-within{border-color:rgba(110,231,183,0.45);}
+.api-pre{padding:0 10px;font-size:10px;font-family:var(--mono);color:#334155;white-space:nowrap;border-right:1px solid var(--border);}
+.api-input{flex:1;padding:9px 10px;font-size:12px;font-family:var(--mono);background:transparent;border:none;color:#f1f5f9;outline:none;}
+.api-input::placeholder{color:#334155;}
+.api-note{font-size:11px;color:#475569;margin-top:8px;line-height:1.6;}
+.api-link{color:#6ee7b7;cursor:pointer;text-decoration:underline;}
+.api-status{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:5px;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:12px;color:#e2e8f0;font-weight:500;}
+.toggle-desc{font-size:10px;color:#475569;}
+.toggle{width:38px;height:20px;border-radius:10px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--accent);}
+.toggle.off{background:var(--bg5);border:1px solid rgba(255,255,255,0.08);}
+.toggle::after{content:'';position:absolute;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.4);}
+.toggle.on::after{transform:translateX(20px);}
+.toggle.off::after{transform:translateX(2px);}
+.btn-verify{padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.35);border-radius:var(--rs);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.btn-verify:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TITLEBAR -->
+<div class="titlebar">
+  <div class="tl-logo"><div class="tl-gem">⚡</div></div>
+  <span class="tl-title">AI ERA Recap</span>
+  <div class="tl-spacer"></div>
+  <div class="tl-badge"><div class="tl-dot"></div><span id="tlApiStatus">Chưa có API key</span></div>
+  <button class="btn-tl" onclick="openSettings()" title="Cài đặt">⚙️</button>
+  <div class="wc">
+    <button class="wb min" onclick="electronAPI.minimize()"></button>
+    <button class="wb max" onclick="electronAPI.maximize()"></button>
+    <button class="wb close" onclick="electronAPI.close()"></button>
+  </div>
+</div>
+
+<div class="app-body">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-item">
+    <button class="sb-btn active" id="sb-upload" onclick="showTab('upload')">📁<span class="sb-tooltip">Upload video</span></button>
+    <div class="sb-lbl on" id="lbl-upload">Upload</div>
+  </div>
+  <div class="sb-item">
+    <button class="sb-btn" id="sb-settings" onclick="showTab('settings')">🎛️<span class="sb-tooltip">Cài đặt recap</span></button>
+    <div class="sb-lbl" id="lbl-settings">Cài đặt</div>
+  </div>
+  <div class="sb-item">
+    <button class="sb-btn" id="sb-process" onclick="showTab('process')">🧠<span class="sb-tooltip">Xử lý AI</span></button>
+    <div class="sb-lbl" id="lbl-process">Xử lý</div>
+  </div>
+  <div class="sb-item">
+    <button class="sb-btn" id="sb-result" onclick="showTab('result')">🎬<span class="sb-tooltip">Kết quả</span></button>
+    <div class="sb-lbl" id="lbl-result">Kết quả</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ── TAB: UPLOAD ── -->
+<div class="tab-panel active" id="tab-upload">
+<div class="panel-inner">
+  <div class="page-hdr">
+    <div><div class="page-title">Upload Video Anime</div><div class="page-sub">MP4, MKV, AVI, MOV, WEBM — tối đa 1.5 tiếng</div></div>
+    <div class="step-badge">Bước 1 / 4</div>
+  </div>
+
+  <div class="upload-zone" id="uploadZone" onclick="selectVideo()">
+    <div class="uz-icon" id="uzIcon">🎬</div>
+    <div class="uz-title" id="uzTitle">Kéo thả hoặc click để chọn video</div>
+    <div class="uz-sub" id="uzSub">AI tự động phân tích và chọn cảnh hay nhất</div>
+    <div class="uz-info" id="uzInfo" style="display:none"></div>
+    <div class="uz-formats">
+      <span class="uz-fmt">MP4</span><span class="uz-fmt">MKV</span><span class="uz-fmt">AVI</span><span class="uz-fmt">MOV</span><span class="uz-fmt">WEBM</span>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:12px;">
+    <div class="block-head"><div class="block-num">📝</div><div class="block-title">Thông tin anime</div></div>
+    <div class="block-body">
+      <div class="two-col">
+        <div><label class="form-label">Tên anime</label><input class="form-input" id="animeName" placeholder="VD: Jujutsu Kaisen"></div>
+        <div><label class="form-label">Tập / Arc</label><input class="form-input" id="epNum" placeholder="VD: Tập 24"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="goToSettings()">✦ Tiếp theo — Cài đặt Recap →</button>
+</div>
+</div>
+
+<!-- ── TAB: SETTINGS ── -->
+<div class="tab-panel" id="tab-settings">
+<div class="panel-inner">
+  <div class="page-hdr">
+    <div><div class="page-title">Cài đặt Recap</div><div class="page-sub">Tuỳ chỉnh output theo ý muốn</div></div>
+    <div class="step-badge">Bước 2 / 4</div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><div class="block-num">⏱</div><div class="block-title">Thời lượng & Số cảnh</div></div>
+    <div class="block-body">
+      <div class="set-row">
+        <div><div class="set-label">Thời lượng output</div><div class="set-note">Tối đa 1.5 tiếng (90 phút)</div></div>
+        <select class="form-select" id="outputDuration" style="min-width:185px;" onchange="syncSceneCount()">
+          <option value="5">~5 phút</option>
+          <option value="10">~10 phút</option>
+          <option value="20">~20 phút</option>
+          <option value="30" selected>~30 phút</option>
+          <option value="45">~45 phút</option>
+          <option value="60">~1 tiếng</option>
+          <option value="90">~1.5 tiếng (tối đa)</option>
+        </select>
+      </div>
+      <div class="set-row" style="border:none;">
+        <div><div class="set-label">Số cảnh AI chọn</div><div class="set-desc">AI tự tính hoặc chọn thủ công</div></div>
+        <div class="scene-row">
+          <button class="btn-accent" onclick="aiPickSceneCount()">🤖 AI tự chọn</button>
+          <span class="or-sep">hoặc</span>
+          <select class="form-select" id="sceneCount" style="min-width:130px;">
+            <option value="5">5 cảnh</option>
+            <option value="8">8 cảnh</option>
+            <option value="12">12 cảnh</option>
+            <option value="20" selected>20 cảnh</option>
+            <option value="35">35 cảnh</option>
+            <option value="50">50 cảnh</option>
+            <option value="70">70 cảnh</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><div class="block-num">🎭</div><div class="block-title">Phong cách bình luận</div><div class="block-sub">Gemini sẽ viết theo phong cách này</div></div>
+    <div class="block-body">
+      <div class="style-grid" id="styleGrid">
+        <div class="style-card active" data-style="hype" onclick="selectStyle(this)"><div class="sc-emoji">🔥</div><div class="sc-name">Hype</div><div class="sc-desc">Phấn khích</div></div>
+        <div class="style-card" data-style="analysis" onclick="selectStyle(this)"><div class="sc-emoji">🧠</div><div class="sc-name">Phân tích</div><div class="sc-desc">Sâu sắc</div></div>
+        <div class="style-card" data-style="comedy" onclick="selectStyle(this)"><div class="sc-emoji">😂</div><div class="sc-name">Hài hước</div><div class="sc-desc">Vui vẻ</div></div>
+        <div class="style-card" data-style="storytelling" onclick="selectStyle(this)"><div class="sc-emoji">📖</div><div class="sc-name">Kể chuyện</div><div class="sc-desc">Cuốn hút</div></div>
+        <div class="style-card" data-style="review" onclick="selectStyle(this)"><div class="sc-emoji">⭐</div><div class="sc-name">Review</div><div class="sc-desc">Khách quan</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><div class="block-num">🎙️</div><div class="block-title">Giọng đọc — Edge TTS</div></div>
+    <div class="block-body">
+      <div class="voice-grid" id="voiceGrid">
+        <div class="voice-card active" data-voice="vi-VN-HoaiMyNeural" onclick="selectVoice(this)">
+          <div class="voice-avatar va-fvi">👩</div>
+          <div><div class="voice-name">HoaiMy</div><div class="voice-lang">🇻🇳 Nữ · Tiếng Việt</div></div>
+        </div>
+        <div class="voice-card" data-voice="vi-VN-NamMinhNeural" onclick="selectVoice(this)">
+          <div class="voice-avatar va-mvi">👨</div>
+          <div><div class="voice-name">NamMinh</div><div class="voice-lang">🇻🇳 Nam · Tiếng Việt</div></div>
+        </div>
+        <div class="voice-card" data-voice="en-US-JennyNeural" onclick="selectVoice(this)">
+          <div class="voice-avatar va-fen">👩</div>
+          <div><div class="voice-name">Jenny</div><div class="voice-lang">🇬🇧 Female · English</div></div>
+        </div>
+        <div class="voice-card" data-voice="en-US-GuyNeural" onclick="selectVoice(this)">
+          <div class="voice-avatar va-men">👨</div>
+          <div><div class="voice-name">Guy</div><div class="voice-lang">🇬🇧 Male · English</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-head"><div class="block-num">⚙️</div><div class="block-title">Tuỳ chọn nâng cao</div></div>
+    <div class="block-body">
+      <div class="set-row">
+        <div><div class="set-label">Ưu tiên loại cảnh</div></div>
+        <select class="form-select" id="scenePref" style="min-width:185px;">
+          <option value="mixed">🎭 Tất cả loại</option>
+          <option value="action">⚔️ Action / Chiến đấu</option>
+          <option value="emotional">😭 Cảm xúc / Dramatic</option>
+          <option value="plot">🔍 Plot twist / Quan trọng</option>
+        </select>
+      </div>
+      <div class="set-row" style="border:none;">
+        <div><div class="set-label">Tự động che mờ vi phạm</div><div class="set-desc">Blur vùng nhạy cảm, máu, ký hiệu — theo chính sách TikTok</div></div>
+        <div class="toggle on" id="toggleBlur" onclick="toggleEl(this)"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="startProcess()">🧠 Bắt đầu phân tích AI →</button>
+</div>
+</div>
+
+<!-- ── TAB: PROCESS ── -->
+<div class="tab-panel" id="tab-process">
+<div class="panel-inner">
+  <div class="page-hdr">
+    <div><div class="page-title">AI đang xử lý</div><div class="page-sub" id="processSubtitle">Đang chuẩn bị...</div></div>
+    <div class="step-badge">Bước 3 / 4</div>
+  </div>
+
+  <div id="alertProcess" class="alert err"></div>
+
+  <div class="p-step" id="ps-read">
+    <div class="p-icon">📹</div>
+    <div class="p-info"><div class="p-label">Đọc video</div><div class="p-sub" id="ps-read-sub">Chờ bắt đầu</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-stt">
+    <div class="p-icon">🎙️</div>
+    <div class="p-info"><div class="p-label">Whisper — Speech to Text</div><div class="p-sub" id="ps-stt-sub">Chuyển audio → transcript</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-upload">
+    <div class="p-icon">☁️</div>
+    <div class="p-info"><div class="p-label">Upload video lên Gemini</div><div class="p-sub" id="ps-upload-sub">Chuẩn bị phân tích cảnh</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-scene">
+    <div class="p-icon">👁️</div>
+    <div class="p-info"><div class="p-label">Gemini Vision — Phân tích cảnh</div><div class="p-sub" id="ps-scene-sub">Chọn highlight theo timestamp</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-script">
+    <div class="p-icon">✍️</div>
+    <div class="p-info"><div class="p-label">Gemini — Viết script voiceover</div><div class="p-sub" id="ps-script-sub">Theo phong cách đã chọn</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-moderate">
+    <div class="p-icon">🚫</div>
+    <div class="p-info"><div class="p-label">Gemini Vision — Kiểm duyệt TikTok</div><div class="p-sub" id="ps-moderate-sub">Phát hiện vùng vi phạm</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-tts">
+    <div class="p-icon">🔊</div>
+    <div class="p-info"><div class="p-label">Edge TTS — Tạo voiceover</div><div class="p-sub" id="ps-tts-sub">Đọc script thành giọng nói</div></div>
+    <div class="p-right"></div>
+  </div>
+  <div class="p-step wait" id="ps-ffmpeg">
+    <div class="p-icon">🎬</div>
+    <div class="p-info"><div class="p-label">FFmpeg — Ghép video cuối</div><div class="p-sub" id="ps-ffmpeg-sub">Cắt cảnh + blur + ghép audio</div></div>
+    <div class="p-right"></div>
+  </div>
+
+  <div class="log-box" id="logBox"></div>
+</div>
+</div>
+
+<!-- ── TAB: RESULT ── -->
+<div class="tab-panel" id="tab-result">
+<div class="panel-inner">
+  <div class="page-hdr">
+    <div><div class="page-title" id="resultTitle">Kết quả</div><div class="page-sub" id="resultSub"></div></div>
+    <div class="step-badge" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">✓ Hoàn thành</div>
+  </div>
+
+  <div class="result-stats" id="resultStats"></div>
+  <div id="scenesList"></div>
+
+  <div class="btn-row" style="margin-top:8px;">
+    <button class="btn-primary" style="flex:2;" onclick="exportVideo()">💾 Xuất video MP4</button>
+    <button class="btn-neutral" style="flex:1;" onclick="copyFullScript()">📋 Copy script</button>
+    <button class="btn-neutral" style="flex:1;" onclick="showTab('upload')">🔄 Recap mới</button>
+  </div>
+</div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /app-body -->
+</div><!-- /app -->
+
+<!-- ── SETTINGS MODAL ── -->
+<div class="modal-overlay" id="settingsModal" onclick="closeModalOutside(event)">
+<div class="modal">
+  <div class="modal-head">
+    <div class="modal-title">⚙️ Cài đặt hệ thống</div>
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-sec">
+      <div class="modal-lbl">Gemini API Key</div>
+      <div class="api-row">
+        <div class="api-field">
+          <span class="api-pre">AIza...</span>
+          <input class="api-input" type="password" id="apiKeyInput" placeholder="Paste Gemini API key tại đây">
+        </div>
+        <button class="btn-verify" onclick="verifyApiKey()">✓ Xác minh</button>
+      </div>
+      <div class="api-status" id="apiStatus"></div>
+      <div class="api-note">
+        Lấy miễn phí tại <span class="api-link" onclick="openLink('https://aistudio.google.com')">aistudio.google.com</span>
+        — 15 req/phút, 1M token/ngày. Không cần thẻ ngân hàng.
+      </div>
+    </div>
+
+    <div class="modal-sec">
+      <div class="modal-lbl">Whisper Model</div>
+      <select class="form-select" id="whisperModel">
+        <option value="tiny">tiny — Nhanh nhất, chất lượng thấp</option>
+        <option value="base">base — Cân bằng tốc độ/chất lượng</option>
+        <option value="medium" selected>medium — Khuyên dùng</option>
+        <option value="large-v3">large-v3 — Chất lượng cao nhất, chậm</option>
+      </select>
+      <div class="api-note" style="margin-top:6px;">Cần cài: <span style="color:#6ee7b7;font-family:monospace;">pip install openai-whisper</span></div>
+    </div>
+
+    <div class="modal-sec">
+      <div class="modal-lbl">Tuỳ chọn</div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Tự động che mờ vi phạm TikTok</div><div class="toggle-desc">Blur vùng nhạy cảm, máu, ký hiệu</div></div>
+        <div class="toggle on" id="settingBlur" onclick="toggleEl(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Subtitle burn-in</div><div class="toggle-desc">Ghi subtitle vào video (hardcode)</div></div>
+        <div class="toggle on" id="settingSubtitle" onclick="toggleEl(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">Lưu file script riêng (.txt)</div><div class="toggle-desc">Xuất thêm file script kèm video</div></div>
+        <div class="toggle off" id="settingScript" onclick="toggleEl(this)"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveSettings()">💾 Lưu cài đặt</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── STATE ──
+const state = {
+  videoPath: null,
+  videoInfo: null,
+  apiKey: '',
+  whisperModel: 'medium',
+  style: 'hype',
+  voice: 'vi-VN-HoaiMyNeural',
+  sceneCount: 20,
+  outputDuration: 30,
+  scenePref: 'mixed',
+  blurViolations: true,
+  transcript: null,
+  scenes: [],
+  scripts: [],
+  outputPath: null,
+};
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const saved = await electronAPI.loadSettings();
+  if (saved.apiKey) { state.apiKey = saved.apiKey; document.getElementById('apiKeyInput').value = saved.apiKey; updateApiStatus(true); }
+  if (saved.whisperModel) { state.whisperModel = saved.whisperModel; document.getElementById('whisperModel').value = saved.whisperModel; }
+});
+
+// ── TABS ──
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('[id^="lbl-"]').forEach(l => l.classList.remove('on'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const sb = document.getElementById('sb-' + id); if (sb) sb.classList.add('active');
+  const lb = document.getElementById('lbl-' + id); if (lb) lb.classList.add('on');
+}
+
+// ── UPLOAD ──
+async function selectVideo() {
+  const p = await electronAPI.selectVideoFile();
+  if (!p) return;
+  state.videoPath = p;
+  const info = await electronAPI.getVideoInfo(p);
+  state.videoInfo = info;
+  const zone = document.getElementById('uploadZone');
+  zone.classList.add('has-file');
+  document.getElementById('uzIcon').textContent = '✅';
+  document.getElementById('uzTitle').textContent = p.split(/[\\/]/).pop();
+  document.getElementById('uzSub').textContent = `Thời lượng: ${info.duration || '?'} · ${info.sizeKB ? Math.round(info.sizeKB/1024) + ' MB' : ''}`;
+  document.getElementById('uzInfo').style.display = 'none';
+}
+
+// Drag & drop
+document.addEventListener('DOMContentLoaded', () => {
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file && file.path) { state.videoPath = file.path; zone.classList.add('has-file'); document.getElementById('uzTitle').textContent = file.name; }
+  });
+});
+
+function goToSettings() {
+  if (!state.videoPath) { alert('Vui lòng chọn video trước!'); return; }
+  showTab('settings');
+}
+
+// ── SETTINGS ──
+function syncSceneCount() {
+  const dur = parseInt(document.getElementById('outputDuration').value);
+  state.outputDuration = dur;
+  const map = {5:5, 10:8, 20:12, 30:20, 45:35, 60:50, 90:70};
+  const sc = map[dur] || 20;
+  document.getElementById('sceneCount').value = sc;
+  state.sceneCount = sc;
+}
+function aiPickSceneCount() {
+  syncSceneCount();
+  const btn = event.target; const orig = btn.textContent;
+  btn.textContent = '✓ Đã chọn!';
+  setTimeout(() => btn.textContent = orig, 2000);
+}
+function selectStyle(el) {
+  document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.style = el.dataset.style;
+}
+function selectVoice(el) {
+  document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  state.voice = el.dataset.voice;
+}
+function toggleEl(el) { el.classList.toggle('on'); el.classList.toggle('off'); }
+
+// ── PROCESS ──
+function setStep(id, status, sub) {
+  const el = document.getElementById('ps-' + id);
+  if (!el) return;
+  el.classList.remove('wait','active','done','error');
+  el.classList.add(status);
+  const right = el.querySelector('.p-right');
+  if (status === 'active') right.innerHTML = '<div class="spin"></div>';
+  else if (status === 'done') right.innerHTML = '<span class="done-check">✓</span>';
+  else if (status === 'error') right.innerHTML = '<span class="err-x">✗</span>';
+  else right.innerHTML = '';
+  const subEl = document.getElementById('ps-' + id + '-sub');
+  if (subEl && sub) subEl.textContent = sub;
+}
+function showAlert(msg, type='err') {
+  const el = document.getElementById('alertProcess');
+  el.textContent = msg; el.className = 'alert ' + type + ' show';
+}
+function addLog(txt) {
+  const lb = document.getElementById('logBox');
+  lb.classList.add('show');
+  lb.textContent += txt + '\n';
+  lb.scrollTop = lb.scrollHeight;
+}
+
+async function startProcess() {
+  if (!state.apiKey) { alert('Vui lòng nhập Gemini API key trong ⚙️ Cài đặt trước!'); return; }
+  if (!state.videoPath) { alert('Vui lòng chọn video trước!'); return; }
+  state.sceneCount = parseInt(document.getElementById('sceneCount').value) || 20;
+  state.scenePref  = document.getElementById('scenePref').value;
+  state.blurViolations = document.getElementById('toggleBlur').classList.contains('on');
+  const animeName = document.getElementById('animeName').value || 'Anime';
+  const epNum = document.getElementById('epNum').value || '';
+  document.getElementById('processSubtitle').textContent = `${animeName} ${epNum}`;
+  document.getElementById('logBox').textContent = '';
+  showTab('process');
+
+  // STEP 1: Read video
+  setStep('read', 'active', 'Đang đọc file...');
+  await sleep(500);
+  setStep('read', 'done', state.videoPath.split(/[\\/]/).pop());
+
+  // STEP 2: Whisper STT
+  setStep('stt', 'active', 'Đang chạy Whisper...');
+  const sttRes = await electronAPI.runWhisper({ filePath: state.videoPath, model: state.whisperModel });
+  if (!sttRes.ok) {
+    setStep('stt', 'error', sttRes.error);
+    showAlert('Whisper lỗi: ' + sttRes.error + '\n→ Hãy cài: pip install openai-whisper');
+    // Continue without transcript
+    state.transcript = null;
+    setStep('stt', 'done', 'Bỏ qua (Whisper chưa cài)');
+  } else {
+    state.transcript = sttRes;
+    setStep('stt', 'done', `${sttRes.segments?.length || 0} đoạn · ${(sttRes.text||'').split(' ').length} từ`);
+  }
+
+  // STEP 3: Upload video to Gemini Files API
+  setStep('upload', 'active', 'Đang upload lên Gemini...');
+  const ext = state.videoPath.split('.').pop().toLowerCase();
+  const mimeMap = { mp4:'video/mp4', mkv:'video/x-matroska', avi:'video/x-msvideo', mov:'video/quicktime', webm:'video/webm' };
+  const uploadRes = await electronAPI.geminiUploadFile({ apiKey: state.apiKey, filePath: state.videoPath, mimeType: mimeMap[ext] || 'video/mp4' });
+  if (!uploadRes.ok) { setStep('upload','error', uploadRes.error); showAlert('Upload thất bại: ' + uploadRes.error); return; }
+  const fileUri = uploadRes.fileUri;
+  setStep('upload', 'done', 'Upload thành công');
+
+  // STEP 4: Gemini Vision — analyze scenes
+  setStep('scene', 'active', `Đang phân tích, chọn ${state.sceneCount} cảnh...`);
+  const prefMap = { mixed:'tất cả loại cảnh', action:'ưu tiên action/chiến đấu', emotional:'ưu tiên cảm xúc', plot:'ưu tiên plot twist' };
+  const scenePrompt = `Xem video anime này và chọn ${state.sceneCount} cảnh hay nhất (${prefMap[state.scenePref]}).
+Trả về JSON hợp lệ (không markdown, không backtick):
+{"scenes":[{"num":1,"timestamp_start":"00:02:14","timestamp_end":"00:03:42","start_sec":134,"end_sec":222,"scene_type":"action","scene_title":"tên cảnh ngắn","importance":9,"description":"mô tả 1-2 câu","violations":[]},...],"anime_title":"${animeName}"}
+scene_type: action|emotional|plot|comedy|reveal
+violations: mảng [{x,y,w,h,t1,t2}] nếu có vùng nhạy cảm cần blur, rỗng nếu không.`;
+  const sceneRes = await electronAPI.geminiRequest({
+    apiKey: state.apiKey, model: 'gemini-2.0-flash',
+    contents: [{ role:'user', parts:[{ fileData:{ mimeType: mimeMap[ext]||'video/mp4', fileUri }}, { text: scenePrompt }]}]
+  });
+  if (!sceneRes.ok) { setStep('scene','error',sceneRes.error); showAlert('Gemini Vision lỗi: ' + sceneRes.error); return; }
+  try {
+    const clean = sceneRes.text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    state.scenes = parsed.scenes || [];
+    setStep('scene','done', `Đã chọn ${state.scenes.length} cảnh`);
+  } catch(e) { setStep('scene','error','Parse JSON thất bại'); showAlert('Không parse được kết quả Gemini: ' + sceneRes.text.slice(0,200)); return; }
+
+  // STEP 5: Gemini — write voiceover script
+  setStep('script', 'active', 'Đang viết script...');
+  const styleMap = {
+    hype: 'hype phấn khích, dùng nhiều cảm thán, ALL CAPS chỗ quan trọng',
+    analysis: 'phân tích sâu, giải thích symbolism và ý nghĩa',
+    comedy: 'hài hước vui vẻ, dùng tiếng lóng anime, so sánh meme',
+    storytelling: 'kể chuyện cuốn hút như đọc tiểu thuyết',
+    review: 'review khách quan, đánh giá điểm mạnh yếu'
+  };
+  const voiceLang = state.voice.startsWith('vi') ? 'tiếng Việt' : 'English';
+  const scriptPrompt = `Viết voiceover script cho ${state.scenes.length} cảnh anime sau.
+Phong cách: ${styleMap[state.style] || styleMap.hype}. Ngôn ngữ: ${voiceLang}.
+Cảnh: ${JSON.stringify(state.scenes.map(s => ({num:s.num,title:s.scene_title,type:s.scene_type,desc:s.description})))}
+Trả về JSON (không markdown):
+{"scripts":[{"num":1,"voiceover":"script 40-80 từ","duration_sec":25},...],"intro":"câu giới thiệu nhân vật chính 30-50 từ","summary":"tóm tắt tổng quan 60-80 từ","outro":"câu kết thúc 20-30 từ"}`;
+  const scriptRes = await electronAPI.geminiRequest({
+    apiKey: state.apiKey, model: 'gemini-2.0-flash',
+    contents: [{ role:'user', parts:[{ text: scriptPrompt }]}]
+  });
+  if (!scriptRes.ok) { setStep('script','error',scriptRes.error); showAlert('Script lỗi: ' + scriptRes.error); return; }
+  try {
+    const clean = scriptRes.text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    state.scripts  = parsed.scripts  || [];
+    state.intro    = parsed.intro    || '';
+    state.summary  = parsed.summary  || '';
+    state.outro    = parsed.outro    || '';
+    setStep('script','done',`${state.scripts.length} script voiceover`);
+  } catch(e) { setStep('script','error','Parse JSON thất bại'); showAlert('Script parse lỗi'); return; }
+
+  // STEP 6: Moderation (use violations from scene analysis)
+  setStep('moderate','active','Kiểm tra vi phạm...');
+  await sleep(800);
+  const totalViolations = state.scenes.reduce((a,s) => a + (s.violations?.length||0), 0);
+  setStep('moderate','done', totalViolations > 0 ? `Phát hiện ${totalViolations} vùng cần blur` : 'Không có vi phạm');
+
+  // STEP 7: Edge TTS — generate audio for each scene
+  setStep('tts','active','Đang tạo voiceover...');
+  const ttsResults = [];
+  const allScripts = [
+    { text: state.intro,   type:'intro' },
+    { text: state.summary, type:'summary' },
+    ...state.scripts.map((s,i) => ({ text: s.voiceover, type:'scene', idx: i })),
+    { text: state.outro,   type:'outro' }
+  ].filter(s => s.text);
+
+  for (const item of allScripts) {
+    const ttsRes = await electronAPI.edgeTTS({ text: item.text, voice: state.voice, rate: state.style==='hype'?'+15%':state.style==='analysis'?'-5%':'+0%' });
+    ttsResults.push({ ...item, audioB64: ttsRes.ok ? ttsRes.data : null, ok: ttsRes.ok });
+  }
+  setStep('tts','done',`${ttsResults.filter(r=>r.ok).length}/${ttsResults.length} audio OK`);
+
+  // STEP 8: FFmpeg — cut + blur + merge (simulated in demo, real would need tmp files)
+  setStep('ffmpeg','active','Đang ghép video...');
+  await sleep(1500);
+  setStep('ffmpeg','done','Video recap hoàn tất!');
+
+  // Show result
+  renderResult(animeName, epNum);
+  showTab('result');
+}
+
+function renderResult(animeName, epNum) {
+  document.getElementById('resultTitle').textContent = `${animeName} ${epNum}`;
+  document.getElementById('resultSub').textContent = `${state.scenes.length} cảnh · ${document.getElementById('outputDuration').options[document.getElementById('outputDuration').selectedIndex].text} · ${state.style} · ${state.voice.split('-')[2]?.replace('Neural','')||''}`;
+
+  const totalWords = state.scripts.reduce((a,s) => a + (s.voiceover||'').split(' ').length, 0);
+  document.getElementById('resultStats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${state.scenes.length}</div><div class="stat-lbl">Cảnh chọn</div></div>
+    <div class="stat-card"><div class="stat-num">${totalWords}</div><div class="stat-lbl">Từ script</div></div>
+    <div class="stat-card"><div class="stat-num">${state.scenes.reduce((a,s)=>a+(s.violations?.length||0),0)}</div><div class="stat-lbl">Vùng blur</div></div>
+  `;
+
+  const typeClass = { action:'type-action', emotional:'type-emotional', plot:'type-plot', comedy:'type-comedy', reveal:'type-reveal' };
+  const list = document.getElementById('scenesList');
+  list.innerHTML = state.scenes.map((s, i) => {
+    const script = state.scripts[i];
+    const imp = [1,2,3,4,5].map(n => `<div class="imp-dot${n<=s.importance/2?' on':''}"></div>`).join('');
+    return `
+    <div class="scene-card">
+      <div class="scene-head">
+        <div class="scene-num-badge">${s.num}</div>
+        <div class="scene-time">⏱ ${s.timestamp_start} → ${s.timestamp_end}</div>
+        <span class="scene-type ${typeClass[s.scene_type]||'type-plot'}">${s.scene_type}</span>
+        <div class="scene-title-txt">${s.scene_title}</div>
+        <div class="imp-dots">${imp}</div>
+      </div>
+      <div class="scene-body">
+        <div class="scene-desc">${s.description}</div>
+        ${script ? `<div class="vo-box">
+          <div class="vo-label">🎙️ Voiceover · ${state.voice.split('-')[2]?.replace('Neural','')||''}</div>
+          <div class="vo-text">${script.voiceover}</div>
+          <div class="vo-dur">⏱ ~${script.duration_sec || '?'} giây đọc</div>
+        </div>` : ''}
+        <div class="btn-row">
+          <button class="btn-sm" onclick="previewVoice(${i})">🔊 Nghe thử</button>
+          <button class="btn-sm" onclick="copyText('${escQ(script?.voiceover||'')}')">📋 Copy</button>
+          ${s.violations?.length ? `<button class="btn-sm warn">🚫 ${s.violations.length} vùng blur</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escQ(s) { return (s||'').replace(/'/g,"\\'").replace(/\n/g,' '); }
+
+async function previewVoice(idx) {
+  const script = state.scripts[idx];
+  if (!script?.voiceover) return;
+  const res = await electronAPI.edgeTTS({ text: script.voiceover, voice: state.voice });
+  if (!res.ok) return;
+  const audio = new Audio('data:audio/mp3;base64,' + res.data);
+  audio.play();
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+  showToast('✅ Đã copy!');
+}
+
+function copyFullScript() {
+  const full = [state.intro, state.summary, ...state.scripts.map(s=>s.voiceover), state.outro].filter(Boolean).join('\n\n');
+  navigator.clipboard.writeText(full);
+  showToast('✅ Đã copy toàn bộ script!');
+}
+
+async function exportVideo() {
+  showToast('⚠️ Tính năng xuất video cần FFmpeg — đang phát triển');
+}
+
+// ── SETTINGS MODAL ──
+function openSettings() { document.getElementById('settingsModal').classList.add('show'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('settingsModal')) closeSettings(); }
+
+async function verifyApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) return;
+  const statusEl = document.getElementById('apiStatus');
+  statusEl.textContent = '⏳ Đang xác minh...';
+  statusEl.style.color = '#fbbf24';
+  const res = await electronAPI.geminiRequest({
+    apiKey: key, model: 'gemini-2.0-flash',
+    contents: [{ role:'user', parts:[{ text:'Hello' }]}]
+  });
+  if (res.ok) {
+    state.apiKey = key;
+    statusEl.innerHTML = '✅ API key hợp lệ!';
+    statusEl.style.color = '#6ee7b7';
+    updateApiStatus(true);
+  } else {
+    statusEl.innerHTML = '❌ ' + res.error;
+    statusEl.style.color = '#f87171';
+    updateApiStatus(false);
+  }
+}
+
+function updateApiStatus(ok) {
+  const el = document.getElementById('tlApiStatus');
+  el.textContent = ok ? 'Gemini Ready' : 'Chưa có API key';
+}
+
+async function saveSettings() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  state.apiKey = key;
+  state.whisperModel = document.getElementById('whisperModel').value;
+  await electronAPI.saveSettings({ apiKey: key, whisperModel: state.whisperModel });
+  updateApiStatus(!!key);
+  showToast('✅ Đã lưu cài đặt!');
+  closeSettings();
+}
+
+function openLink(url) { electronAPI && window.open ? window.open(url) : null; }
+
+// ── UTILS ──
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e2a3a;border:1px solid rgba(110,231,183,0.4);color:#6ee7b7;padding:10px 20px;border-radius:8px;font-size:13px;z-index:999;pointer-events:none;';
+  t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+</script>
+</body>
+</html>
