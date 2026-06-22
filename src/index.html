@@ -223,6 +223,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
 .toggle.off::after{transform:translateX(2px);}
 .btn-verify{padding:9px 14px;font-size:12px;font-weight:600;font-family:var(--sans);background:var(--bg4);color:#6ee7b7;border:1px solid rgba(110,231,183,0.35);border-radius:var(--rs);cursor:pointer;transition:all .18s;white-space:nowrap;}
 .btn-verify:hover{background:var(--bg5);border-color:rgba(110,231,183,0.65);}
+
+/* RENDER PROGRESS */
+.render-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+.render-overlay.show{display:flex;}
+.render-box{background:var(--bg2);border:1px solid rgba(110,231,183,0.2);border-radius:var(--rl);width:480px;padding:28px;}
+.render-title{font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:6px;}
+.render-msg{font-size:12px;color:#6ee7b7;margin-bottom:16px;min-height:20px;}
+.render-bar-wrap{background:var(--bg4);border-radius:99px;height:6px;overflow:hidden;margin-bottom:8px;}
+.render-bar{height:100%;background:linear-gradient(90deg,#10b981,#6ee7b7);border-radius:99px;transition:width .3s;width:0%;}
+.render-pct{font-size:11px;color:#475569;text-align:right;}
+
+/* PREVIEW TAB */
+.preview-player{width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.preview-player video{width:100%;height:100%;object-fit:contain;}
 </style>
 </head>
 <body>
@@ -473,15 +487,45 @@ html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--text);fo
   <div class="result-stats" id="resultStats"></div>
   <div id="scenesList"></div>
   <div class="btn-row" style="margin-top:8px;">
-    <button class="btn-primary" style="flex:2;" onclick="exportVideo()">💾 Xuất video MP4</button>
+    <button class="btn-primary" style="flex:2;" onclick="startRender()">🎬 Render Video</button>
     <button class="btn-neutral" style="flex:1;" onclick="copyFullScript()">📋 Copy script</button>
     <button class="btn-neutral" style="flex:1;" onclick="showTab('upload')">🔄 Recap mới</button>
   </div>
 </div>
 </div>
 
+
+<!-- ── TAB: PREVIEW ── -->
+<div class="tab-panel" id="tab-preview">
+<div class="panel-inner">
+  <div class="page-hdr">
+    <div><div class="page-title">Preview & Xuất</div><div class="page-sub" id="previewSub">Xem trước video đã render</div></div>
+    <div class="step-badge" style="border-color:rgba(16,185,129,0.45);color:#6ee7b7;">Bước 4 / 4</div>
+  </div>
+  <div class="preview-player">
+    <video id="previewVideo" controls></video>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" style="flex:2;" onclick="saveRendered()">💾 Xuất ra Desktop</button>
+    <button class="btn-neutral" style="flex:1;" onclick="startRender()">🔄 Render lại</button>
+    <button class="btn-neutral" style="flex:1;" onclick="showTab('result')">← Quay lại</button>
+  </div>
+</div>
+</div>
+
 </div><!-- /content -->
 </div><!-- /app-body -->
+
+<!-- RENDER OVERLAY -->
+<div class="render-overlay" id="renderOverlay">
+  <div class="render-box">
+    <div class="render-title">🎬 Đang Render Video...</div>
+    <div class="render-msg" id="renderMsg">Chuẩn bị...</div>
+    <div class="render-bar-wrap"><div class="render-bar" id="renderBar"></div></div>
+    <div class="render-pct" id="renderPct">0%</div>
+  </div>
+</div>
+
 </div><!-- /app -->
 
 <!-- SETTINGS MODAL -->
@@ -872,8 +916,67 @@ function copyFullScript() {
   showToast('✅ Đã copy toàn bộ script!');
 }
 
+let renderedPath = null;
+
+async function startRender() {
+  if (!state.scenes.length) { showToast('⚠️ Chưa có cảnh nào!'); return; }
+  if (!state.videoPath) { showToast('⚠️ Không tìm thấy video!'); return; }
+
+  // DEBUG: log state
+  console.log('=== RENDER DEBUG ===');
+  console.log('videoPath:', state.videoPath);
+  console.log('tmpDir:', state.tmpDir);
+  console.log('scenes count:', state.scenes.length);
+  console.log('scenes[0]:', JSON.stringify(state.scenes[0]));
+
+  renderedPath = null;
+  document.getElementById('renderOverlay').classList.add('show');
+  document.getElementById('renderBar').style.width = '0%';
+  document.getElementById('renderPct').textContent = '0%';
+  document.getElementById('renderMsg').textContent = 'Đang chuẩn bị...';
+
+  electronAPI.offRenderProgress();
+  electronAPI.onRenderProgress(({ msg, pct }) => {
+    document.getElementById('renderMsg').textContent = msg;
+    document.getElementById('renderBar').style.width = pct + '%';
+    document.getElementById('renderPct').textContent = pct + '%';
+  });
+
+  const animeName = document.getElementById('animeName').value || 'Anime';
+  const epNum     = document.getElementById('epNum').value || '';
+
+  const res = await electronAPI.renderVideo({
+    scenes:    state.scenes,
+    videoPath: state.videoPath,
+    voice:     state.voice,
+    style:     state.style,
+    animeName, epNum
+  });
+
+  document.getElementById('renderOverlay').classList.remove('show');
+
+  if (!res.ok) { showToast('❌ Render thất bại: ' + res.error); return; }
+
+  renderedPath = res.finalPath;
+  const videoEl = document.getElementById('previewVideo');
+  videoEl.src = 'file:///' + res.finalPath.replace(/\\/g, '/');
+  document.getElementById('previewSub').textContent = `${animeName} ${epNum} · ${state.scenes.length} cảnh`;
+  showTab('preview');
+  showToast('✅ Render xong! Xem preview bên dưới.');
+}
+
+async function saveRendered() {
+  if (!renderedPath) { showToast('⚠️ Chưa có video để xuất!'); return; }
+  const animeName = document.getElementById('animeName').value || 'Anime';
+  const epNum     = document.getElementById('epNum').value || '';
+  const filename  = `${animeName}_${epNum}_recap.mp4`.replace(/\s+/g,'_');
+  const res = await electronAPI.saveOutput({ tmpPath: renderedPath, filename });
+  if (res.ok) showToast('✅ Đã lưu: ' + res.outPath);
+  else showToast('❌ ' + res.error);
+}
+
 async function exportVideo() {
-  showToast('⏳ Tính năng đang hoàn thiện...');
+  startRender();
 }
 
 // ── SETTINGS MODAL ──

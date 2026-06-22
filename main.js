@@ -339,3 +339,121 @@ app.whenReady().then(() => {
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+
+// ── EDGE TTS → FILE ──
+ipcMain.handle('edge-tts-file', async (_e, { text, voice, rate, outPath }) => {
+  try {
+    const buf = await edgeTTS.synthesize(text, { voice, rate: rate || '+0%', pitch: '+0Hz' });
+    fs.writeFileSync(outPath, buf);
+    return { ok: true, path: outPath };
+  } catch(e) { return { ok: false, error: e.message }; }
+});
+
+// ── GET AUDIO DURATION ──
+function getAudioDuration(filePath) {
+  return new Promise((resolve) => {
+    const proc = spawn(getFFmpegPath(), ['-i', filePath, '-f', 'null', '-']);
+    let stderr = '';
+    proc.stderr.on('data', d => { stderr += d.toString(); });
+    proc.on('close', () => {
+      const m = stderr.match(/Duration:\s*(\d+):(\d+):(\d+)\.(\d+)/);
+      if (m) resolve(parseInt(m[1])*3600 + parseInt(m[2])*60 + parseInt(m[3]) + parseInt(m[4])/100);
+      else resolve(30);
+    });
+    proc.on('error', () => resolve(30));
+  });
+}
+
+// ── RENDER VIDEO ──
+ipcMain.handle('render-video', async (event, { scenes, videoPath, voice, style, animeName, epNum }) => {
+  const send = (msg, pct) => event.sender.send('render-progress', { msg, pct });
+  const tmpDir = path.join(os.tmpdir(), `render_${Date.now()}`);
+  fs.mkdirSync(tmpDir, { recursive: true });
+
+  const rateMap = { hype:'+15%', analysis:'-5%', comedy:'+10%', storytelling:'+0%', review:'-3%' };
+  const ttsRate = rateMap[style] || '+0%';
+  const MAX_SPEED = 2.5;
+  const scenePaths = [];
+
+  try {
+    for (let i = 0; i < scenes.length; i++) {
+      const s = scenes[i];
+      const pct = Math.round((i / scenes.length) * 85);
+      send(`Đang xử lý cảnh ${i+1}/${scenes.length}: ${s.scene_title}`, pct);
+
+      const clipRaw    = path.join(tmpDir, `clip_raw_${i}.mp4`);
+      const clipSpeed  = path.join(tmpDir, `clip_speed_${i}.mp4`);
+      const voicePath  = path.join(tmpDir, `voice_${i}.mp3`);
+      const sceneFinal = path.join(tmpDir, `scene_${i}.mp4`);
+
+      // 1. Cắt clip theo timestamp (tắt audio gốc)
+      const clipDur = s.end_sec - s.start_sec;
+      await runFFmpeg([
+        '-ss', String(s.start_sec), '-t', String(clipDur),
+        '-i', videoPath,
+        '-an', '-c:v', 'copy',
+        '-y', clipRaw
+      ]);
+
+      // 2. TTS → file audio
+      const ttsBuf = await edgeTTS.synthesize(s.voiceover, { voice, rate: ttsRate, pitch: '+0Hz' });
+      fs.writeFileSync(voicePath, ttsBuf);
+
+      // 3. Tính speed
+      const voiceDur = await getAudioDuration(voicePath);
+      let speed = clipDur / voiceDur;
+      let useClip = clipRaw;
+
+      if (speed > MAX_SPEED) {
+        // Cắt ngắn clip rồi tua 2.5x
+        const clipTrimmed = path.join(tmpDir, `clip_trim_${i}.mp4`);
+        await runFFmpeg(['-ss','0','-t',String(voiceDur * MAX_SPEED),'-i',clipRaw,'-c','copy','-y',clipTrimmed]);
+        useClip = clipTrimmed;
+        speed = MAX_SPEED;
+      }
+
+      // 4. Tua nhanh clip
+      if (speed > 1.05) {
+        const pts = (1 / speed).toFixed(4);
+        await runFFmpeg([
+          '-i', useClip,
+          '-vf', `setpts=${pts}*PTS`,
+          '-an', '-c:v', 'libx264', '-preset', 'fast', '-crf', '20',
+          '-y', clipSpeed
+        ]);
+      } else {
+        fs.copyFileSync(useClip, clipSpeed);
+      }
+
+      // 5. Ghép clip + voice
+      await runFFmpeg([
+        '-i', clipSpeed, '-i', voicePath,
+        '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k',
+        '-shortest', '-y', sceneFinal
+      ]);
+
+      scenePaths.push(sceneFinal);
+      send(`✓ Cảnh ${i+1}/${scenes.length} xong`, pct + 1);
+    }
+
+    // 6. Concat
+    send('Đang ghép tất cả cảnh...', 90);
+    const listPath  = path.join(tmpDir, 'list.txt');
+    const finalPath = path.join(tmpDir, 'final.mp4');
+    fs.writeFileSync(listPath, scenePaths.map(p => `file '${p.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}'`).join('\n'));
+
+    await runFFmpeg([
+      '-f', 'concat', '-safe', '0', '-i', listPath,
+      '-c:v', 'libx264', '-preset', 'fast', '-crf', '18',
+      '-c:a', 'aac', '-b:a', '128k',
+      '-movflags', '+faststart', '-y', finalPath
+    ]);
+
+    send('✅ Render hoàn tất!', 100);
+    return { ok: true, finalPath, tmpDir };
+
+  } catch(e) {
+    try { fs.rmSync(tmpDir, { recursive: true }); } catch(e2) {}
+    return { ok: false, error: e.message };
+  }
+});
